@@ -148,10 +148,10 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       final file = File(filePath);
       await file.writeAsString(docContent, encoding: utf8);
 
-      await Share.shareXFiles(
-        [XFile(filePath)],
+      // Perlu menyimpan file terlebih dahulu sebelum sharing
+      await SharePlus.instance.share(
+        text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath',
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
-        text: 'Berikut adalah file soal yang dihasilkan.',
       );
     } catch (e) {
       if (mounted) {
@@ -282,10 +282,10 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       await file.writeAsBytes(await pdf.save());
       
-      await Share.shareXFiles(
-        [XFile(filePath)],
+      // Perlu menyimpan file terlebih dahulu sebelum sharing
+      await SharePlus.instance.share(
+        text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath',
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
-        text: 'Berikut adalah file soal yang dihasilkan.',
       );
     } catch (e) {
       if (mounted) {
