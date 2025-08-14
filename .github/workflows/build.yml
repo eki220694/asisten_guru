@@ -17,7 +17,8 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.32.8'
+        flutter-version: '3.22.0' # Menggunakan versi yang lebih stabil
+        channel: 'stable'
         
     - name: Get dependencies
       run: |
@@ -26,6 +27,11 @@ jobs:
     - name: Analyze project (warnings allowed)
       run: |
         flutter analyze || echo "Analysis completed with warnings (continuing build)"
+        
+    - name: Clean project
+      run: |
+        flutter clean
+        flutter pub get
         
     - name: Build APK
       run: |
