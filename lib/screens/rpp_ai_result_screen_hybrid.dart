@@ -3,16 +3,16 @@ import 'package:asisten_guru/models/rpp_ai_request.dart';
 import 'package:asisten_guru/services/ai_rpp_service_hybrid.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-class RppAiResultScreen extends StatefulWidget {
+class RppAiResultScreenHybrid extends StatefulWidget {
   final RppAiRequest request;
 
-  const RppAiResultScreen({Key? key, required this.request}) : super(key: key);
+  const RppAiResultScreenHybrid({super.key, required this.request});
 
   @override
-  _RppAiResultScreenState createState() => _RppAiResultScreenState();
+  RppAiResultScreenHybridState createState() => RppAiResultScreenHybridState();
 }
 
-class _RppAiResultScreenState extends State<RppAiResultScreen> {
+class RppAiResultScreenHybridState extends State<RppAiResultScreenHybrid> {
   final AiRppService _aiRppService = AiRppService();
   late final String _rppContent;
 

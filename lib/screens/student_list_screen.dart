@@ -95,11 +95,22 @@ class _StudentListScreenState extends State<StudentListScreen> {
             TextButton(
               onPressed: () async {
                 await _dbHelper.deleteStudent(student.id!);
+                if (!mounted) return;
                 _loadData();
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Siswa ${student.name} dihapus')),
-                );
+                if (!mounted) return;
+                // Simpan context dalam variabel lokal
+                final dialogContext = context;
+                // Gunakan Future.microtask untuk memastikan context masih valid
+                Future.microtask(() {
+                  if (dialogContext.mounted) {
+                    Navigator.maybePop(dialogContext);
+                    if (dialogContext.mounted) {
+                      ScaffoldMessenger.of(dialogContext).showSnackBar(
+                        SnackBar(content: Text('Siswa ${student.name} dihapus')),
+                      );
+                    }
+                  }
+                });
               },
               child: const Text('Hapus', style: TextStyle(color: Colors.red)),
             ),

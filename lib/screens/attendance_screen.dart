@@ -20,8 +20,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   List<Class> _availableClasses = [];
   List<Subject> _availableSubjects = [];
   List<Student> _studentsInClass = [];
-  Map<int, String> _attendanceStatus = {}; // studentId -> status
-  Map<int, int?> _existingAttendanceIds = {}; // studentId -> attendanceId
+  final Map<int, String> _attendanceStatus = {}; // studentId -> status
+  final Map<int, int?> _existingAttendanceIds = {}; // studentId -> attendanceId
 
   int? _selectedClassId;
   int? _selectedSubjectId;
@@ -64,8 +64,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
     setState(() {
       _studentsInClass = filteredStudents;
-      _attendanceStatus.clear();
-      _existingAttendanceIds.clear();
       for (var record in attendanceRecords) {
         _attendanceStatus[record.studentId] = record.status;
         _existingAttendanceIds[record.studentId] = record.id;
@@ -128,10 +126,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
     if (operations > 0) {
       await batch.commit(noResult: true);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Absensi berhasil disimpan!')),
       );
     } else {
+      if (!mounted) return;
        ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Tidak ada perubahan untuk disimpan.')),
       );
@@ -171,7 +171,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  value: _selectedClassId,
+                  initialValue: _selectedClassId,
                   hint: const Text('Pilih Kelas'),
                   decoration: const InputDecoration(labelText: 'Pilih Kelas'),
                   items: _availableClasses.map<DropdownMenuItem<int>>((Class cls) {
@@ -188,7 +188,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  value: _selectedSubjectId,
+                  initialValue: _selectedSubjectId,
                   hint: const Text('Pilih Mapel'),
                   decoration: const InputDecoration(labelText: 'Pilih Mapel'),
                   items: _availableSubjects.map<DropdownMenuItem<int>>((Subject subject) {

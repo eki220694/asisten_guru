@@ -27,7 +27,6 @@ class RealAiQuestionService {
   Future<List<GeneratedQuestion>> generateQuestions(QuestionAiRequest request) async {
     // Cek apakah API key tersedia
     if (_apiKey.isEmpty) {
-      print('API key tidak ditemukan. Menggunakan implementasi fallback.');
       return _fallbackToOldImplementation(request);
     }
     
@@ -63,12 +62,10 @@ class RealAiQuestionService {
         return _parseAiResponse(aiResponse, request.numberOfQuestions);
       } else {
         // Jika API gagal, kembali ke implementasi lama
-        print('API request failed with status: ${response.statusCode}');
         return _fallbackToOldImplementation(request);
       }
     } catch (e) {
       // Jika terjadi error (termasuk timeout), kembali ke implementasi lama
-      print('Error calling AI API: $e');
       return _fallbackToOldImplementation(request);
     }
   }

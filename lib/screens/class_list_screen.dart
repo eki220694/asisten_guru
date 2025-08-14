@@ -45,6 +45,8 @@ class _ClassListScreenState extends State<ClassListScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                // Simpan context dalam variabel lokal
+                final dialogContext = context;
                 final name = nameController.text.trim();
                 if (name.isNotEmpty) {
                   final newClass = Class(id: cls?.id, name: name);
@@ -53,8 +55,15 @@ class _ClassListScreenState extends State<ClassListScreen> {
                   } else {
                     await _dbHelper.updateClass(newClass);
                   }
+                  if (!mounted) return;
                   _updateClassList();
-                  Navigator.pop(context);
+                  if (!mounted) return;
+                  // Gunakan Future.microtask untuk memastikan context masih valid
+                  Future.microtask(() {
+                    if (dialogContext.mounted) {
+                      Navigator.maybePop(dialogContext);
+                    }
+                  });
                 }
               },
               child: const Text('Simpan'),
@@ -79,12 +88,23 @@ class _ClassListScreenState extends State<ClassListScreen> {
             ),
             TextButton(
               onPressed: () async {
+                // Simpan context dalam variabel lokal
+                final dialogContext = context;
                 await _dbHelper.deleteClass(id);
+                if (!mounted) return;
                 _updateClassList();
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Kelas dihapus')),
-                );
+                if (!mounted) return;
+                // Gunakan Future.microtask untuk memastikan context masih valid
+                Future.microtask(() {
+                  if (dialogContext.mounted) {
+                    Navigator.maybePop(dialogContext);
+                    if (dialogContext.mounted) {
+                      ScaffoldMessenger.of(dialogContext).showSnackBar(
+                        const SnackBar(content: Text('Kelas dihapus')),
+                      );
+                    }
+                  }
+                });
               },
               child: const Text('Hapus', style: TextStyle(color: Colors.red)),
             ),

@@ -3,13 +3,13 @@ import 'package:asisten_guru/screens/rpp_ai_result_screen.dart';
 import 'package:flutter/material.dart';
 
 class RppAiInputScreen extends StatefulWidget {
-  const RppAiInputScreen({Key? key}) : super(key: key);
+  const RppAiInputScreen({super.key});
 
   @override
-  _RppAiInputScreenState createState() => _RppAiInputScreenState();
+  RppAiInputScreenState createState() => RppAiInputScreenState();
 }
 
-class _RppAiInputScreenState extends State<RppAiInputScreen> {
+class RppAiInputScreenState extends State<RppAiInputScreen> {
   final _formKey = GlobalKey<FormState>();
   final _subjectController = TextEditingController();
   final _gradeController = TextEditingController();
@@ -118,10 +118,10 @@ class _RppAiInputScreenState extends State<RppAiInputScreen> {
                     );
                   }
                 },
-                child: const Text('Buat RPP Sekarang'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
+                child: const Text('Buat RPP Sekarang'),
               ),
             ],
           ),

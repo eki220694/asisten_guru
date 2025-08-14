@@ -13,13 +13,13 @@ import '../database/database_helper.dart';
 class RppAiResultScreen extends StatefulWidget {
   final RppAiRequest request;
 
-  const RppAiResultScreen({Key? key, required this.request}) : super(key: key);
+  const RppAiResultScreen({super.key, required this.request});
 
   @override
-  _RppAiResultScreenState createState() => _RppAiResultScreenState();
+  RppAiResultScreenState createState() => RppAiResultScreenState();
 }
 
-class _RppAiResultScreenState extends State<RppAiResultScreen> {
+class RppAiResultScreenState extends State<RppAiResultScreen> {
   final AiRppService _aiRppService = AiRppService();
   final DatabaseHelper _dbHelper = DatabaseHelper();
   late final String _rppContent;
@@ -33,19 +33,25 @@ class _RppAiResultScreenState extends State<RppAiResultScreen> {
   Future<void> _saveRpp() async {
     final subjects = await _dbHelper.getSubjects();
     int? selectedSubjectId;
+    final screenContext = context;
 
     if (!mounted) return;
 
     if (subjects.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Anda harus membuat mata pelajaran terlebih dahulu.')),
-      );
+      // Gunakan Future.microtask untuk memastikan context masih valid
+      Future.microtask(() {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Anda harus membuat mata pelajaran terlebih dahulu.')),
+          );
+        }
+      });
       return;
     }
 
     await showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         int? dialogSelectedSubjectId;
         final formKey = GlobalKey<FormState>();
         return AlertDialog(
@@ -69,7 +75,7 @@ class _RppAiResultScreenState extends State<RppAiResultScreen> {
           actions: [
             TextButton(
               child: const Text('Batal'),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(dialogContext).pop(),
             ),
             TextButton(
               child: const Text('Simpan'),
@@ -82,11 +88,18 @@ class _RppAiResultScreenState extends State<RppAiResultScreen> {
                       title: widget.request.topic,
                       content: _rppContent,
                     );
+                    if (!mounted) return;
                     await _dbHelper.insertRpp(newRpp);
 
-                    if (!mounted) return;
-                    Navigator.of(context).pop(); // Tutup dialog
-                    Navigator.of(context).pop(true); // Kembali dari result screen
+                    // Gunakan Future.microtask untuk memastikan context masih valid
+                    Future.microtask(() {
+                      if (dialogContext.mounted) {
+                        Navigator.of(dialogContext).pop(); // Tutup dialog
+                      }
+                      if (screenContext.mounted) {
+                        Navigator.of(screenContext).pop(true); // Kembali dari result screen
+                      }
+                    });
                   }
                 }
               },
@@ -116,8 +129,7 @@ class _RppAiResultScreenState extends State<RppAiResultScreen> {
 
     // Perlu menyimpan file terlebih dahulu sebelum sharing
     await SharePlus.instance.share(
-      text: 'Berikut adalah file RPP yang dihasilkan. File tersedia di: $filePath',
-      subject: 'RPP: ${widget.request.topic}',
+      ShareParams(text: 'Berikut adalah file RPP yang dihasilkan. File tersedia di: $filePath'),
     );
   }
 

@@ -15,16 +15,16 @@ class QuestionResultScreen extends StatefulWidget {
   final List<GeneratedQuestion> questions;
 
   const QuestionResultScreen({
-    Key? key,
+    super.key,
     required this.request,
     required this.questions,
-  }) : super(key: key);
+  });
 
   @override
-  _QuestionResultScreenState createState() => _QuestionResultScreenState();
+  QuestionResultScreenState createState() => QuestionResultScreenState();
 }
 
-class _QuestionResultScreenState extends State<QuestionResultScreen> {
+class QuestionResultScreenState extends State<QuestionResultScreen> {
   late String _questionsContent;
 
   @override
@@ -150,8 +150,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
 
       // Perlu menyimpan file terlebih dahulu sebelum sharing
       await SharePlus.instance.share(
-        text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath',
-        subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
+        ShareParams(text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath'),
       );
     } catch (e) {
       if (mounted) {
@@ -269,7 +268,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: questionWidgets,
                   );
-                }).toList(),
+                }),
               ],
             );
           },
@@ -284,8 +283,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       // Perlu menyimpan file terlebih dahulu sebelum sharing
       await SharePlus.instance.share(
-        text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath',
-        subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
+        ShareParams(text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath'),
       );
     } catch (e) {
       if (mounted) {

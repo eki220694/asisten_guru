@@ -135,7 +135,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                   'Tanggal: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date))}'),
               SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: currentStatus,
+                initialValue: currentStatus,
                 items: ['Hadir', 'Sakit', 'Izin', 'Alpa'].map((status) {
                   return DropdownMenuItem(value: status, child: Text(status));
                 }).toList(),
@@ -150,6 +150,8 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                 onPressed: () => Navigator.pop(context), child: Text('Batal')),
             ElevatedButton(
               onPressed: () async {
+                // Simpan context dalam variabel lokal
+                final dialogContext = context;
                 final updatedRecord = Attendance(
                     id: record.id,
                     studentId: record.studentId,
@@ -158,10 +160,15 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                     date: record.date,
                     status: currentStatus);
                 await _dbHelper.updateAttendance(updatedRecord);
-                _loadData();
-                if (mounted) {
-                  Navigator.pop(context);
-                }
+                if (!mounted) return;
+                await _loadData();
+                if (!mounted) return;
+                // Gunakan Future.microtask untuk memastikan context masih valid
+                Future.microtask(() {
+                  if (dialogContext.mounted) {
+                    Navigator.pop(dialogContext);
+                  }
+                });
               },
               child: Text('Simpan'),
             ),
@@ -208,7 +215,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
         children: [
           Expanded(
             child: DropdownButtonFormField<int>(
-              value: _selectedClassId,
+              initialValue: _selectedClassId,
               hint: const Text('Semua Kelas'),
               decoration: const InputDecoration(labelText: 'Filter Kelas'),
               items: [

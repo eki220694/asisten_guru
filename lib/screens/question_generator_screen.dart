@@ -11,13 +11,13 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:docx_template/docx_template.dart';
 
 class QuestionGeneratorScreen extends StatefulWidget {
-  const QuestionGeneratorScreen({Key? key}) : super(key: key);
+  const QuestionGeneratorScreen({super.key});
 
   @override
-  _QuestionGeneratorScreenState createState() => _QuestionGeneratorScreenState();
+  QuestionGeneratorScreenState createState() => QuestionGeneratorScreenState();
 }
 
-class _QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
+class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
   final _formKey = GlobalKey<FormState>();
   final _subjectController = TextEditingController();
   final _gradeController = TextEditingController();
@@ -192,7 +192,7 @@ class _QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _questionType,
+                initialValue: _questionType,
                 decoration: const InputDecoration(
                   labelText: 'Tipe Soal',
                   border: OutlineInputBorder(),
@@ -210,7 +210,7 @@ class _QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _difficulty,
+                initialValue: _difficulty,
                 decoration: const InputDecoration(
                   labelText: 'Tingkat Kesulitan',
                   border: OutlineInputBorder(),
@@ -234,11 +234,20 @@ class _QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                     String material = _materialController.text;
                     if (_selectedFile != null) {
                       try {
+                        if (!mounted) return;
                         material = await _readFileContent(_selectedFile!);
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Gagal membaca file. Pastikan file dalam format yang didukung.')),
-                        );
+                        if (!mounted) return;
+                        // Simpan context dalam variabel lokal
+                        final screenContext = context;
+                        // Gunakan Future.microtask untuk memastikan context masih valid
+                        Future.microtask(() {
+                          if (screenContext.mounted) {
+                            ScaffoldMessenger.of(screenContext).showSnackBar(
+                              const SnackBar(content: Text('Gagal membaca file. Pastikan file dalam format yang didukung.')),
+                            );
+                          }
+                        });
                         return;
                       }
                     }
@@ -251,40 +260,51 @@ class _QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                       questionType: _questionType,
                       difficulty: _difficulty,
                     );
-
-                    // Generate soal menggunakan AI service yang sebenarnya
-                    final realAiService = RealAiQuestionService();
-                    List<GeneratedQuestion> generatedQuestions = [];
                     
+                    List<GeneratedQuestion> generatedQuestions = [];
                     try {
-                      generatedQuestions = await realAiService.generateQuestions(request);
+                      final service = RealAiQuestionService();
+                      generatedQuestions = await service.generateQuestions(request);
                     } catch (e) {
-                      // Jika AI service gagal, gunakan implementasi lama sebagai fallback
+                      // Log error untuk debugging
+                      // print('Error using AI service: $e'); // Removed for production
+                      // Jika terjadi error, gunakan implementasi lama
+                      if (!mounted) return;
                       final fallbackService = AiQuestionService();
                       generatedQuestions = fallbackService.generateQuestions(request);
                     }
 
+                    if (!mounted) return;
                     if (generatedQuestions.isEmpty) {
                       // Jika tidak ada soal yang dihasilkan, gunakan implementasi lama
                       final fallbackService = AiQuestionService();
+                      if (!mounted) return;
                       generatedQuestions = fallbackService.generateQuestions(request);
                     }
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QuestionResultScreen(
-                          request: request,
-                          questions: generatedQuestions,
-                        ),
-                      ),
-                    );
+                    if (!mounted) return;
+                    // Simpan context dalam variabel lokal
+                    final screenContext = context;
+                    // Gunakan Future.microtask untuk memastikan context masih valid
+                    Future.microtask(() {
+                      if (screenContext.mounted) {
+                        Navigator.push(
+                          screenContext,
+                          MaterialPageRoute(
+                            builder: (ctx) => QuestionResultScreen(
+                              request: request,
+                              questions: generatedQuestions,
+                            ),
+                          ),
+                        );
+                      }
+                    });
                   }
                 },
-                child: const Text('Buat Soal Sekarang'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
+                child: const Text('Buat Soal Sekarang'),
               ),
             ],
           ),

@@ -14,57 +14,14 @@ class RppDetailScreen extends StatefulWidget {
 }
 
 class _RppDetailScreenState extends State<RppDetailScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final DatabaseHelper _dbHelper = DatabaseHelper();
-
-  late String _title;
-  int? _selectedSubjectId;
-  String? _objectives;
-  String? _materials;
-  String? _activities;
-  String? _assessment;
   String? _content; // Kolom untuk konten Markdown
-
-  late Future<List<Subject>> _subjectsFuture;
   bool _isAiGenerated = false;
 
   @override
   void initState() {
     super.initState();
-    _title = widget.rpp?.title ?? '';
-    _selectedSubjectId = widget.rpp?.subjectId;
-    _objectives = widget.rpp?.objectives;
-    _materials = widget.rpp?.materials;
-    _activities = widget.rpp?.activities;
-    _assessment = widget.rpp?.assessment;
     _content = widget.rpp?.content;
     _isAiGenerated = _content != null && _content!.isNotEmpty;
-    _subjectsFuture = _dbHelper.getSubjects();
-  }
-
-  Future<void> _saveRpp() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      final rpp = Rpp(
-        id: widget.rpp?.id,
-        subjectId: _selectedSubjectId!,
-        title: _title,
-        objectives: _isAiGenerated ? null : _objectives,
-        materials: _isAiGenerated ? null : _materials,
-        activities: _isAiGenerated ? null : _activities,
-        assessment: _isAiGenerated ? null : _assessment,
-        content: _isAiGenerated ? _content : null,
-      );
-
-      if (widget.rpp == null) {
-        await _dbHelper.insertRpp(rpp);
-      } else {
-        await _dbHelper.updateRpp(rpp);
-      }
-
-      Navigator.pop(context, true);
-    }
   }
 
   @override
@@ -83,12 +40,17 @@ class _RppDetailScreenState extends State<RppDetailScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => RppEditScreen(rpp: widget.rpp),
+                    builder: (ctx) => RppEditScreen(rpp: widget.rpp),
                   ),
                 ).then((value) {
-                  if (value == true) {
-                    Navigator.pop(context, true); // Refresh list
-                  }
+                  // Simpan context dalam variabel lokal
+                  final screenContext = context;
+                  // Gunakan Future.microtask untuk memastikan context masih valid
+                  Future.microtask(() {
+                    if (screenContext.mounted && value == true) {
+                      Navigator.pop(screenContext, true); // Refresh list
+                    }
+                  });
                 });
               },
             ),
@@ -114,10 +76,10 @@ class RppEditScreen extends StatefulWidget {
   const RppEditScreen({super.key, this.rpp});
 
   @override
-  _RppEditScreenState createState() => _RppEditScreenState();
+  RppEditScreenState createState() => RppEditScreenState();
 }
 
-class _RppEditScreenState extends State<RppEditScreen> {
+class RppEditScreenState extends State<RppEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
@@ -167,8 +129,14 @@ class _RppEditScreenState extends State<RppEditScreen> {
         await _dbHelper.updateRpp(rpp);
       }
 
+      if (!mounted) return;
       // Pop dua kali untuk kembali ke daftar RPP
-      Navigator.pop(context, true);
+      // Gunakan Future.microtask untuk memastikan context masih valid
+      Future.microtask(() {
+        if (mounted) {
+          Navigator.pop(context, true);
+        }
+      });
     }
   }
 
@@ -200,7 +168,7 @@ class _RppEditScreenState extends State<RppEditScreen> {
                   var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
 
                   return DropdownButtonFormField<int>(
-                    value: validSelectedId,
+                    initialValue: validSelectedId,
                     decoration: const InputDecoration(labelText: 'Mata Pelajaran'),
                     items: subjects.map((subject) {
                       return DropdownMenuItem<int>(

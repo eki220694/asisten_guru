@@ -44,6 +44,8 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                // Simpan context dalam variabel lokal
+                final dialogContext = context;
                 final name = nameController.text.trim();
                 if (name.isNotEmpty) {
                   final newSubject = Subject(id: subject?.id, name: name);
@@ -52,8 +54,15 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                   } else {
                     await _dbHelper.updateSubject(newSubject);
                   }
+                  if (!mounted) return;
                   _updateSubjectList();
-                  Navigator.pop(context);
+                  if (!mounted) return;
+                  // Gunakan Future.microtask untuk memastikan context masih valid
+                  Future.microtask(() {
+                    if (dialogContext.mounted) {
+                      Navigator.maybePop(dialogContext);
+                    }
+                  });
                 }
               },
               child: const Text('Simpan'),
@@ -80,12 +89,23 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
             ),
             TextButton(
               onPressed: () async {
+                // Simpan context dalam variabel lokal
+                final dialogContext = context;
                 await _dbHelper.deleteSubject(id);
+                if (!mounted) return;
                 _updateSubjectList();
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Mata pelajaran dihapus')),
-                );
+                if (!mounted) return;
+                // Gunakan Future.microtask untuk memastikan context masih valid
+                Future.microtask(() {
+                  if (dialogContext.mounted) {
+                    Navigator.maybePop(dialogContext);
+                    if (dialogContext.mounted) {
+                      ScaffoldMessenger.of(dialogContext).showSnackBar(
+                        const SnackBar(content: Text('Mata pelajaran dihapus')),
+                      );
+                    }
+                  }
+                });
               },
               child: const Text('Hapus', style: TextStyle(color: Colors.red)),
             ),

@@ -56,6 +56,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
         await _dbHelper.updateQuiz(quiz);
       }
 
+      if (!mounted) return;
       Navigator.pop(context, true);
     }
   }
@@ -104,7 +105,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                   var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
 
                   return DropdownButtonFormField<int>(
-                    value: validSelectedId,
+                    initialValue: validSelectedId,
                     decoration: const InputDecoration(
                       labelText: 'Mata Pelajaran',
                       border: OutlineInputBorder(),

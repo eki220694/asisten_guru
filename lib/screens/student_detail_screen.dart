@@ -50,6 +50,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
         await _dbHelper.updateStudent(student);
       }
 
+      if (!mounted) return;
       Navigator.pop(context, true); // Return true to indicate a change was made
     }
   }
@@ -95,7 +96,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                   var validSelectedId = _selectedClassId != null && classes.any((c) => c.id == _selectedClassId) ? _selectedClassId : null;
 
                   return DropdownButtonFormField<int>(
-                    value: validSelectedId,
+                    initialValue: validSelectedId,
                     decoration: const InputDecoration(labelText: 'Kelas'),
                     items: classes.map((cls) {
                       return DropdownMenuItem<int>(
@@ -108,13 +109,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                         _selectedClassId = value;
                       });
                     },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Silakan pilih kelas';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _selectedClassId = value,
+                    validator: (value) => value == null ? 'Pilih kelas' : null,
                   );
                 },
               ),

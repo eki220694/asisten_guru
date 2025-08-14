@@ -84,7 +84,7 @@ class AiRppService {
 
   String _generatePancasilaProfile(String subject, List<String> objectives, String model) {
     Set<String> p = {'Mandiri'};
-    final s = (objectives.join(' ') + ' ' + model).toLowerCase();
+    final s = '${objectives.join(' ')} $model'.toLowerCase();
     if (s.contains('analisis') || s.contains('evaluasi') || s.contains('kritis')) p.add('Bernalar Kritis');
     if (s.contains('membuat') || s.contains('merancang') || s.contains('karya')) p.add('Kreatif');
     if (s.contains('kelompok') || s.contains('kolaborasi') || s.contains('project')) p.add('Gotong Royong');
@@ -95,16 +95,16 @@ class AiRppService {
   String _generateDigitalUtilization(String topic) => "Video Pembelajaran dari YouTube terkait '$topic'.";
 
   String _buildPreliminaryActivities(String objective) {
-    return """
+    return '''
 <ol>
     <li>Guru membuka pembelajaran dengan salam dan doa.</li>
     <li>Guru dan Murid merefleksikan kesepakatan kelas.</li>
     <li>Guru melakukan ice breaking singkat untuk meningkatkan fokus.</li>
     <li>Guru mengajukan pertanyaan pemantik yang relevan dengan tujuan.</li>
     <li>Guru melakukan asesmen awal singkat untuk mengetahui pemahaman dasar murid.</li>
-    <li>Guru menyampaikan secara jelas tujuan pembelajaran: \"<strong>$objective</strong>\".</li>
+    <li>Guru menyampaikan secara jelas tujuan pembelajaran: "<strong>$objective</strong>".</li>
 </ol>
-""";
+''';
   }
 
   String _buildCoreActivities(String topic, String model) {
@@ -114,10 +114,10 @@ class AiRppService {
   }
 
   String _buildPjBLCore(String topic) {
-    return """
+    return '''
 <p><strong>Fase 1: Penentuan Pertanyaan Mendasar (Start With the Essential Question)</strong></p>
 <ol>
-    <li>Guru mengajukan pertanyaan esensial yang bersifat menantang dan terbuka terkait <strong>$topic</strong>. Contoh: \"Bagaimana kita bisa merancang solusi inovatif untuk [masalah terkait topik] di lingkungan sekolah?\"
+    <li>Guru mengajukan pertanyaan esensial yang bersifat menantang dan terbuka terkait <strong>$topic</strong>. Contoh: "Bagaimana kita bisa merancang solusi inovatif untuk [masalah terkait topik] di lingkungan sekolah?"
     <li>Murid, dengan bimbingan, mengidentifikasi masalah dan merumuskan pertanyaan proyek yang akan diselesaikan secara kelompok.</li>
 </ol>
 <p><strong>Fase 2: Mendesain Perencanaan Proyek (Design a Plan for the Project)</strong></p>
@@ -145,11 +145,11 @@ class AiRppService {
     <li>Di akhir proyek, murid dan guru melakukan refleksi bersama mengenai tantangan, pembelajaran, dan pengalaman selama mengerjakan proyek.</li>
     <li>Murid diajak untuk mengidentifikasi apa yang berhasil dan apa yang bisa diperbaiki di proyek selanjutnya.</li>
 </ol>
-""";
+''';
   }
 
   String _buildPBLCore(String topic) {
-    return """
+    return '''
 <p><strong>Fase 1: Orientasi Murid pada Masalah (Student Orientation to the Problem)</strong></p>
 <ol>
     <li>Guru menyajikan masalah autentik dan relevan terkait <strong>$topic</strong> yang tidak memiliki jawaban tunggal.</li>
@@ -175,11 +175,11 @@ class AiRppService {
     <li>Setelah presentasi, guru memfasilitasi diskusi kelas untuk menganalisis setiap solusi yang diusulkan.</li>
     <li>Murid bersama guru melakukan refleksi terhadap efektivitas proses pemecahan masalah, baik secara individu maupun kelompok.</li>
 </ol>
-""";
+''';
   }
 
   String _buildDiscoveryCore(String topic) {
-    return """
+    return '''
 <p><strong>Fase 1: Pemberian Rangsangan (Stimulation)</strong></p>
 <ol>
     <li>Guru menyajikan fenomena, gambar, atau video yang kontradiktif atau menarik terkait <strong>$topic</strong> untuk membangkitkan rasa ingin tahu.</li>
@@ -210,11 +210,11 @@ class AiRppService {
     <li>Berdasarkan pembuktian, murid menarik kesimpulan atau generalisasi mengenai konsep <strong>$topic</strong> yang dipelajari.</li>
     <li>Guru membantu murid untuk mengartikulasikan temuan mereka dan menghubungkannya dengan konsep yang lebih luas.</li>
 </ol>
-""";
+''';
   }
 
   String _buildClosingActivities() {
-    return """
+    return '''
 <ol>
     <li>Guru memberikan apresiasi kepada individu/kelompok yang menunjukkan kinerja terbaik.</li>
     <li>Guru bersama murid menyimpulkan materi ajar yang telah dipelajari.</li>
@@ -222,15 +222,15 @@ class AiRppService {
     <li>Guru menyampaikan rencana kegiatan pada pembelajaran berikutnya.</li>
     <li>Guru menutup kegiatan pembelajaran dengan doa dan salam.</li>
 </ol>
-""";
+''';
   }
 
   String _generateDynamicLkpd(String topic, List<String> objectives, int rppNumber) {
     String lkpdActivities = "";
     for (var obj in objectives) {
-      lkpdActivities += "<h4>Aktivitas untuk Tujuan: \"$obj\"</h4>" + _getActivityModelForObjective(obj, topic, rppNumber);
+      lkpdActivities += "<h4>Aktivitas untuk Tujuan: $obj</h4>${_getActivityModelForObjective(obj, topic, rppNumber)}";
     }
-    return '<h3>LAMPIRAN: Lembar Kerja Peserta Didik (LKPD)</h3><hr>' + lkpdActivities;
+    return '<h3>LAMPIRAN: Lembar Kerja Peserta Didik (LKPD)</h3><hr>$lkpdActivities';
   }
 
   String _getActivityModelForObjective(String objective, String topic, int rppNumber) {
@@ -239,7 +239,7 @@ class AiRppService {
     // Kategori Analisis
     if (objective.contains('menganalisis') || objective.contains('membandingkan') || objective.contains('mengevaluasi')) {
       final activities = [
-        """
+        '''
 <p><strong>Model Aktivitas: Analisis Studi Kasus</strong></p>
 <p><strong>Petunjuk:</strong> Bacalah skenario singkat di bawah ini, lalu jawablah pertanyaan-pertanyaan berikut.</p>
 <p><strong>Skenario:</strong> (Guru dapat menyediakan studi kasus singkat yang relevan dengan $topic)</p>
@@ -249,18 +249,18 @@ class AiRppService {
     <li>Apa masalah utama yang terjadi dalam skenario di atas?</li>
     <li>Bagaimana konsep <strong>$topic</strong> dapat diterapkan untuk memahami atau menyelesaikan masalah tersebut?</li>
 </ol>
-""",
-        """
+''',
+        '''
 <p><strong>Model Aktivitas: Debat Kritis</strong></p>
 <p><strong>Petunjuk:</strong> Bentuklah dua kelompok (pro dan kontra) untuk mendebatkan mosi di bawah ini.</p>
-<p><strong>Mosi Debat:</strong> \"Penerapan [aspek kunci dari $topic] lebih banyak memberikan dampak positif daripada negatif.\"</p>
+<p><strong>Mosi Debat:</strong> "Penerapan [aspek kunci dari $topic] lebih banyak memberikan dampak positif daripada negatif."</p>
 <p><strong>Tugas:</strong></p>
 <ol>
     <li>Setiap kelompok menyusun 3-5 argumen utama untuk mendukung posisinya.</li>
     <li>Sajikan argumen secara bergantian dan berikan sanggahan terhadap argumen lawan.</li>
 </ol>
-""",
-        """
+''',
+        '''
 <p><strong>Model Aktivitas: Analisis SWOT</strong></p>
 <p><strong>Petunjuk:</strong> Lakukan analisis SWOT (Strengths, Weaknesses, Opportunities, Threats) terhadap penerapan konsep <strong>$topic</strong>.</p>
 <p><strong>Tugas:</strong></p>
@@ -268,23 +268,23 @@ class AiRppService {
     <li>Identifikasi minimal 2 poin untuk setiap komponen SWOT.</li>
     <li>Jelaskan bagaimana Opportunities dapat mengatasi Weaknesses.</li>
 </ol>
-"""
+'''
       ];
       return activities[(rppNumber - 1) % activities.length];
     } 
     // Kategori Kreasi
     else if (objective.contains('membuat') || objective.contains('merancang') || objective.contains('mengembangkan')) {
       final activities = [
-        """
+        '''
 <p><strong>Model Aktivitas: Peta Konsep Kreatif</strong></p>
 <p><strong>Petunjuk:</strong> Buatlah sebuah peta konsep (mind map) yang komprehensif tentang <strong>$topic</strong>.</p>
 <p><strong>Kriteria Peta Konsep:</strong></p>
 <ul>
-    <li>Tujuan <strong>\"$objective\"</strong> menjadi pusat atau hasil akhir dari peta konsep.</li>
+    <li>Tujuan <strong>"$objective"</strong> menjadi pusat atau hasil akhir dari peta konsep.</li>
     <li>Cabang utama harus mencakup: Definisi Kunci, Komponen Penting, dan Contoh Nyata.</li>
 </ul>
-""",
-        """
+''',
+        '''
 <p><strong>Model Aktivitas: Desain Proyek Mini</strong></p>
 <p><strong>Petunjuk:</strong> Rancanglah sebuah proyek sederhana yang menerapkan prinsip-prinsip dari <strong>$topic</strong>.</p>
 <p><strong>Kerangka Rancangan:</strong></p>
@@ -293,8 +293,8 @@ class AiRppService {
     <li><strong>Tujuan Proyek:</strong> Apa yang ingin dicapai melalui proyek ini?</li>
     <li><strong>Langkah-langkah:</strong> Uraikan 3-5 langkah utama untuk menyelesaikan proyek.</li>
 </ol>
-""",
-        """
+''',
+        '''
 <p><strong>Model Aktivitas: Penulisan Infografis</strong></p>
 <p><strong>Petunjuk:</strong> Buatlah draf konten untuk sebuah infografis yang menjelaskan <strong>$topic</strong> secara visual.</p>
 <p><strong>Konten Infografis:</strong></p>
@@ -303,22 +303,22 @@ class AiRppService {
     <li><strong>Poin Kunci:</strong> 3-4 poin paling penting tentang $topic, masing-masing dengan ikon visual sederhana.</li>
     <li><strong>Data/Fakta Menarik:</strong> Sertakan satu data atau fakta mengejutkan.</li>
 </ul>
-"""
+'''
       ];
       return activities[(rppNumber - 1) % activities.length];
     } 
     // Kategori Dasar/Pemahaman
     else {
       final activities = [
-        """
+        '''
 <p><strong>Model Aktivitas: Pertanyaan Terbuka</strong></p>
 <p><strong>Petunjuk:</strong> Jawablah pertanyaan berikut dengan jelas dan ringkas.</p>
 <ol>
     <li>Apa definisi dari <strong>$topic</strong> menurut pemahaman Anda?</li>
     <li>Berikan satu contoh nyata dari <strong>$topic</strong> dalam kehidupan sehari-hari.</li>
 </ol>
-""",
-        """
+''',
+        '''
 <p><strong>Model Aktivitas: Identifikasi Konsep</strong></p>
 <p><strong>Petunjuk:</strong> Dari daftar istilah di bawah ini, lingkari 3 istilah yang paling relevan dengan <strong>$topic</strong> dan jelaskan alasannya.</p>
 <p><em>(Guru menyediakan 5-7 istilah yang relevan dan tidak relevan)</em></p>
@@ -328,15 +328,15 @@ class AiRppService {
     <li>Istilah 2: ...</li>
     <li>Istilah 3: ...</li>
 </ol>
-""",
-        """
+''',
+        '''
 <p><strong>Model Aktivitas: Refleksi Singkat</strong></p>
 <p><strong>Petunjuk:</strong> Tuliskan satu hal baru yang Anda pelajari tentang <strong>$topic</strong> dan satu pertanyaan yang masih Anda miliki.</p>
 <p><strong>Hal Baru yang Dipelajari:</strong></p>
 <p><em>...</em></p>
 <p><strong>Pertanyaan Lanjutan:</strong></p>
 <p><em>...</em></p>
-"""
+'''
       ];
       return activities[(rppNumber - 1) % activities.length];
     }
@@ -345,18 +345,18 @@ class AiRppService {
   String _generateSignatureBlock() {
     // Mengembalikan layout tabel untuk tanda tangan agar bersebelahan
     // sesuai permintaan, dan menambahkan placeholder tanggal.
-    return """
+    return '''
 <br><br>
-<table style=\"width: 100%; border-collapse: collapse;\">
+<table style="width: 100%; border-collapse: collapse;">
     <tr>
-        <td style=\"width: 50%; text-align: center; vertical-align: top;\">
+        <td style="width: 50%; text-align: center; vertical-align: top;">
             <p>Mengetahui,</p>
             <p>Kepala Sekolah</p>
             <br><br><br><br>
             <p><strong>(Nama Kepala Sekolah)</strong></p>
             <p>NIP. .........................................</p>
         </td>
-        <td style=\"width: 50%; text-align: center; vertical-align: top;\">
+        <td style="width: 50%; text-align: center; vertical-align: top;">
             <p>.................., .................................</p>
             <p>Guru Mata Pelajaran</p>
             <br><br><br><br>
@@ -365,8 +365,8 @@ class AiRppService {
         </td>
     </tr>
 </table>
-""";
+''';
   }
-}
 
   
+}
