@@ -3,127 +3,127 @@ import 'package:asisten_guru/models/rpp_ai_request.dart';
 class AiRppService {
   // Template dengan kerangka struktur tetap
   static const String rppTemplate = '''
-<div class=\"rpp-container\">
-  <div class=\"rpp-header\">
+<div class="rpp-container">
+  <div class="rpp-header">
     <h1>RENCANA PELAKSANAAN PEMBELAJARAN (RPP)</h1>
   </div>
   
-  <div class=\"rpp-identity\">
-    <div class=\"identity-item\">
+  <div class="rpp-identity">
+    <div class="identity-item">
       <strong>Satuan Pendidikan</strong>: [DIISI GURU]
     </div>
-    <div class=\"identity-item\">
+    <div class="identity-item">
       <strong>Kelas/Semester</strong>: {grade}
     </div>
-    <div class=\"identity-item\">
+    <div class="identity-item">
       <strong>Mata Pelajaran</strong>: {subject}
     </div>
-    <div class=\"identity-item\">
+    <div class="identity-item">
       <strong>Materi Pokok</strong>: {topic}
     </div>
-    <div class=\"identity-item\">
+    <div class="identity-item">
       <strong>Alokasi Waktu</strong>: {duration}
     </div>
-    <div class=\"identity-item\">
+    <div class="identity-item">
       <strong>Tahun Pelajaran</strong>: [DIISI GURU]
     </div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>A. Kompetensi Inti</h2>
-    <div class=\"ai-generated\">{coreCompetencies}</div>
+    <div class="ai-generated">{coreCompetencies}</div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>B. Kompetensi Dasar</h2>
-    <div class=\"ai-generated\">{basicCompetencies}</div>
+    <div class="ai-generated">{basicCompetencies}</div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>C. Indikator Pencapaian Kompetensi</h2>
-    <div class=\"ai-generated\">{indicators}</div>
+    <div class="ai-generated">{indicators}</div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>D. Tujuan Pembelajaran</h2>
-    <div class=\"ai-generated\">{learningObjectives}</div>
+    <div class="ai-generated">{learningObjectives}</div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>E. Materi Pembelajaran</h2>
-    <div class=\"ai-generated\">{learningMaterials}</div>
+    <div class="ai-generated">{learningMaterials}</div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>F. Pendekatan, Model, dan Metode</h2>
-    <div class=\"subsection\">
-      <strong>Pendekatan</strong>: <span class=\"ai-generated\">{approach}</span>
+    <div class="subsection">
+      <strong>Pendekatan</strong>: <span class="ai-generated">{approach}</span>
     </div>
-    <div class=\"subsection\">
-      <strong>Model Pembelajaran</strong>: <span class=\"ai-generated\">{learningModel}</span>
+    <div class="subsection">
+      <strong>Model Pembelajaran</strong>: <span class="ai-generated">{learningModel}</span>
     </div>
-    <div class=\"subsection\">
-      <strong>Metode</strong>: <span class=\"ai-generated\">{methods}</span>
+    <div class="subsection">
+      <strong>Metode</strong>: <span class="ai-generated">{methods}</span>
     </div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>G. Kegiatan Pembelajaran</h2>
     
-    <div class=\"activity-section\">
+    <div class="activity-section">
       <h3>1. Kegiatan Pendahuluan</h3>
-      <div class=\"ai-generated\">{preliminaryActivities}</div>
+      <div class="ai-generated">{preliminaryActivities}</div>
     </div>
     
-    <div class=\"activity-section\">
+    <div class="activity-section">
       <h3>2. Kegiatan Inti</h3>
-      <div class=\"ai-generated\">{coreActivities}</div>
+      <div class="ai-generated">{coreActivities}</div>
     </div>
     
-    <div class=\"activity-section\">
+    <div class="activity-section">
       <h3>3. Kegiatan Penutup</h3>
-      <div class=\"ai-generated\">{closingActivities}</div>
+      <div class="ai-generated">{closingActivities}</div>
     </div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>H. Penilaian</h2>
-    <div class=\"subsection\">
-      <strong>Teknik Penilaian</strong>: <span class=\"ai-generated\">{assessmentTechniques}</span>
+    <div class="subsection">
+      <strong>Teknik Penilaian</strong>: <span class="ai-generated">{assessmentTechniques}</span>
     </div>
-    <div class=\"subsection\">
-      <strong>Bentuk Instrumen</strong>: <span class=\"ai-generated\">{assessmentForms}</span>
+    <div class="subsection">
+      <strong>Bentuk Instrumen</strong>: <span class="ai-generated">{assessmentForms}</span>
     </div>
-    <div class=\"subsection\">
-      <strong>Instrumen Penilaian</strong>: <span class=\"ai-generated\">{assessmentInstruments}</span>
+    <div class="subsection">
+      <strong>Instrumen Penilaian</strong>: <span class="ai-generated">{assessmentInstruments}</span>
     </div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>I. Media, Alat, dan Sumber Belajar</h2>
-    <div class=\"subsection\">
-      <strong>Media Pembelajaran</strong>: <span class=\"ai-generated\">{learningMedia}</span>
+    <div class="subsection">
+      <strong>Media Pembelajaran</strong>: <span class="ai-generated">{learningMedia}</span>
     </div>
-    <div class=\"subsection\">
-      <strong>Alat dan Bahan</strong>: <span class=\"ai-generated\">{toolsAndMaterials}</span>
+    <div class="subsection">
+      <strong>Alat dan Bahan</strong>: <span class="ai-generated">{toolsAndMaterials}</span>
     </div>
-    <div class=\"subsection\">
-      <strong>Sumber Belajar</strong>: <span class=\"ai-generated\">{learningSources}</span>
+    <div class="subsection">
+      <strong>Sumber Belajar</strong>: <span class="ai-generated">{learningSources}</span>
     </div>
   </div>
 
-  <div class=\"rpp-section\">
+  <div class="rpp-section">
     <h2>J. Profil Pelajar Pancasila</h2>
-    <div class=\"ai-generated\">{pancasilaProfiles}</div>
+    <div class="ai-generated">{pancasilaProfiles}</div>
   </div>
 
-  <div class=\"signature-section\">
-    <div class=\"signature-item\">
+  <div class="signature-section">
+    <div class="signature-item">
       <p>Mengetahui,<br>Kepala Sekolah</p>
       <br><br><br>
       <p>_____________________<br>NIP.</p>
     </div>
-    <div class=\"signature-item\">
+    <div class="signature-item">
       <p>_____________________<br>Guru Mata Pelajaran</p>
       <br><br><br>
       <p>_____________________<br>NIP.</p>

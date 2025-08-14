@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:cross_file/cross_file.dart';
 import 'dart:convert';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:collection/collection.dart';
@@ -149,7 +148,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       final file = File(filePath);
       await file.writeAsString(docContent, encoding: utf8);
 
-      await SharePlus.shareXFiles(
+      await SharePlus.instance.shareXFiles(
         [XFile(filePath)],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
@@ -283,7 +282,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       await file.writeAsBytes(await pdf.save());
       
-      await SharePlus.shareXFiles(
+      await SharePlus.instance.shareXFiles(
         [XFile(filePath)],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',

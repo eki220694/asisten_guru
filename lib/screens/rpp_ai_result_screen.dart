@@ -8,7 +8,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:cross_file/cross_file.dart';
 import '../database/database_helper.dart';
 
 class RppAiResultScreen extends StatefulWidget {
@@ -115,7 +114,7 @@ class _RppAiResultScreenState extends State<RppAiResultScreen> {
     final file = File(filePath);
     await file.writeAsString(_rppContent);
 
-    await SharePlus.shareXFiles(
+    await SharePlus.instance.shareXFiles(
       [XFile(filePath)],
       subject: 'RPP: ${widget.request.topic}',
       text: 'Berikut adalah file RPP yang dihasilkan.',
