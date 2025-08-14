@@ -7,6 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:convert';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:collection/collection.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class QuestionResultScreen extends StatefulWidget {
   final QuestionAiRequest request;
@@ -146,9 +149,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       final file = File(filePath);
       await file.writeAsString(docContent, encoding: utf8);
 
-      final xFile = XFile(filePath, mimeType: 'application/msword');
-
-      await SharePlus().shareFiles(
+      await Share.shareFiles(
         [filePath],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
@@ -219,7 +220,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       pdf.addPage(
         pw.Page(
-          build: (pw.Context context) {
+          build: (context) {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -282,7 +283,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       await file.writeAsBytes(await pdf.save());
       
-      await SharePlus().shareFiles(
+      await Share.shareFiles(
         [filePath],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',

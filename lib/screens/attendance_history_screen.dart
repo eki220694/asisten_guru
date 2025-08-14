@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
 import '../database/database_helper.dart';
 import '../models/attendance.dart';
 import '../models/class.dart';

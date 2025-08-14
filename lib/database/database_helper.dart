@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
 import '../models/student.dart';
 import '../models/attendance.dart';
 import '../models/class.dart';
@@ -9,7 +8,6 @@ import '../models/subject.dart';
 import '../models/rpp.dart';
 import '../models/quiz.dart';
 import '../models/question.dart';
-import '../models/option.dart';
 import '../models/option.dart';
 
 class DatabaseHelper {
