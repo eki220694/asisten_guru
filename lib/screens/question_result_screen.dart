@@ -8,7 +8,6 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:convert';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:collection/collection.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class QuestionResultScreen extends StatefulWidget {
@@ -149,7 +148,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       final file = File(filePath);
       await file.writeAsString(docContent, encoding: utf8);
 
-      await Share.shareFiles(
+      await SharePlus.shareFiles(
         [filePath],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
@@ -283,7 +282,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       await file.writeAsBytes(await pdf.save());
       
-      await Share.shareFiles(
+      await SharePlus.shareFiles(
         [filePath],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
