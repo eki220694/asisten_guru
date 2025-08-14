@@ -1,0 +1,260 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import '../database/database_helper.dart';
+import '../models/rpp.dart';
+import '../models/subject.dart';
+
+class RppDetailScreen extends StatefulWidget {
+  final Rpp? rpp;
+
+  const RppDetailScreen({super.key, this.rpp});
+
+  @override
+  State<RppDetailScreen> createState() => _RppDetailScreenState();
+}
+
+class _RppDetailScreenState extends State<RppDetailScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+
+  late String _title;
+  int? _selectedSubjectId;
+  String? _objectives;
+  String? _materials;
+  String? _activities;
+  String? _assessment;
+  String? _content; // Kolom untuk konten Markdown
+
+  late Future<List<Subject>> _subjectsFuture;
+  bool _isAiGenerated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _title = widget.rpp?.title ?? '';
+    _selectedSubjectId = widget.rpp?.subjectId;
+    _objectives = widget.rpp?.objectives;
+    _materials = widget.rpp?.materials;
+    _activities = widget.rpp?.activities;
+    _assessment = widget.rpp?.assessment;
+    _content = widget.rpp?.content;
+    _isAiGenerated = _content != null && _content!.isNotEmpty;
+    _subjectsFuture = _dbHelper.getSubjects();
+  }
+
+  Future<void> _saveRpp() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      final rpp = Rpp(
+        id: widget.rpp?.id,
+        subjectId: _selectedSubjectId!,
+        title: _title,
+        objectives: _isAiGenerated ? null : _objectives,
+        materials: _isAiGenerated ? null : _materials,
+        activities: _isAiGenerated ? null : _activities,
+        assessment: _isAiGenerated ? null : _assessment,
+        content: _isAiGenerated ? _content : null,
+      );
+
+      if (widget.rpp == null) {
+        await _dbHelper.insertRpp(rpp);
+      } else {
+        await _dbHelper.updateRpp(rpp);
+      }
+
+      Navigator.pop(context, true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Jika ini adalah RPP yang ada dan memiliki konten (dari AI),
+    // tampilkan layar pratinjau Markdown, bukan form.
+    if (widget.rpp != null && _isAiGenerated) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.rpp!.title),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                // Navigasi ke layar edit yang sebenarnya
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RppEditScreen(rpp: widget.rpp),
+                  ),
+                ).then((value) {
+                  if (value == true) {
+                    Navigator.pop(context, true); // Refresh list
+                  }
+                });
+              },
+            ),
+          ],
+        ),
+        body: Markdown(
+          data: _content!,
+          padding: const EdgeInsets.all(16.0),
+          selectable: true,
+        ),
+      );
+    }
+
+    // Jika ini RPP baru atau RPP manual lama, tampilkan form.
+    return RppEditScreen(rpp: widget.rpp);
+  }
+}
+
+// Widget baru yang hanya berisi Form untuk menghindari duplikasi kode
+class RppEditScreen extends StatefulWidget {
+  final Rpp? rpp;
+
+  const RppEditScreen({super.key, this.rpp});
+
+  @override
+  _RppEditScreenState createState() => _RppEditScreenState();
+}
+
+class _RppEditScreenState extends State<RppEditScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+
+  late TextEditingController _titleController;
+  late TextEditingController _contentController;
+  late TextEditingController _objectivesController;
+  late TextEditingController _materialsController;
+  late TextEditingController _activitiesController;
+  late TextEditingController _assessmentController;
+
+  int? _selectedSubjectId;
+  late Future<List<Subject>> _subjectsFuture;
+  bool _isAiGenerated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedSubjectId = widget.rpp?.subjectId;
+    _isAiGenerated = widget.rpp?.content != null && widget.rpp!.content!.isNotEmpty;
+
+    _titleController = TextEditingController(text: widget.rpp?.title ?? '');
+    _contentController = TextEditingController(text: widget.rpp?.content ?? '');
+    _objectivesController = TextEditingController(text: widget.rpp?.objectives ?? '');
+    _materialsController = TextEditingController(text: widget.rpp?.materials ?? '');
+    _activitiesController = TextEditingController(text: widget.rpp?.activities ?? '');
+    _assessmentController = TextEditingController(text: widget.rpp?.assessment ?? '');
+
+    _subjectsFuture = _dbHelper.getSubjects();
+  }
+
+  Future<void> _saveRpp() async {
+    if (_formKey.currentState!.validate()) {
+      final rpp = Rpp(
+        id: widget.rpp?.id,
+        subjectId: _selectedSubjectId!,
+        title: _titleController.text,
+        content: _isAiGenerated ? _contentController.text : null,
+        objectives: _isAiGenerated ? null : _objectivesController.text,
+        materials: _isAiGenerated ? null : _materialsController.text,
+        activities: _isAiGenerated ? null : _activitiesController.text,
+        assessment: _isAiGenerated ? null : _assessmentController.text,
+      );
+
+      if (widget.rpp == null) {
+        await _dbHelper.insertRpp(rpp);
+      } else {
+        await _dbHelper.updateRpp(rpp);
+      }
+
+      // Pop dua kali untuk kembali ke daftar RPP
+      Navigator.pop(context, true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.rpp == null ? 'Tambah RPP' : 'Edit RPP'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: _saveRpp,
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              FutureBuilder<List<Subject>>(
+                future: _subjectsFuture,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  var subjects = snapshot.data!;
+                  var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
+
+                  return DropdownButtonFormField<int>(
+                    value: validSelectedId,
+                    decoration: const InputDecoration(labelText: 'Mata Pelajaran'),
+                    items: subjects.map((subject) {
+                      return DropdownMenuItem<int>(
+                        value: subject.id,
+                        child: Text(subject.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSubjectId = value;
+                      });
+                    },
+                    validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                  );
+                },
+              ),
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(labelText: 'Judul RPP'),
+                validator: (value) => value!.isEmpty ? 'Judul tidak boleh kosong' : null,
+              ),
+              if (_isAiGenerated)
+                TextFormField(
+                  controller: _contentController,
+                  decoration: const InputDecoration(labelText: 'Konten RPP (Markdown)'),
+                  maxLines: 20,
+                  validator: (value) => value!.isEmpty ? 'Konten tidak boleh kosong' : null,
+                )
+              else ...[
+                TextFormField(
+                  controller: _objectivesController,
+                  decoration: const InputDecoration(labelText: 'Tujuan Pembelajaran'),
+                  maxLines: 3,
+                ),
+                TextFormField(
+                  controller: _materialsController,
+                  decoration: const InputDecoration(labelText: 'Materi Pembelajaran'),
+                  maxLines: 5,
+                ),
+                TextFormField(
+                  controller: _activitiesController,
+                  decoration: const InputDecoration(labelText: 'Kegiatan Pembelajaran'),
+                  maxLines: 5,
+                ),
+                TextFormField(
+                  controller: _assessmentController,
+                  decoration: const InputDecoration(labelText: 'Penilaian'),
+                  maxLines: 3,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
