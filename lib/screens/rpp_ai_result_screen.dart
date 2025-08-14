@@ -114,10 +114,11 @@ class _RppAiResultScreenState extends State<RppAiResultScreen> {
     final file = File(filePath);
     await file.writeAsString(_rppContent);
 
-    final xFile = XFile(filePath, mimeType: 'text/html');
+    final file = File(filePath);
+    await file.writeAsString(htmlContent, encoding: utf8);
 
-    await Share.shareXFiles(
-      [xFile],
+    await SharePlus().shareFiles(
+      [filePath],
       subject: 'RPP: ${widget.request.topic}',
       text: 'Berikut adalah file RPP yang dihasilkan.',
     );
