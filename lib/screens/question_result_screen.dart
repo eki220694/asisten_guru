@@ -148,7 +148,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       final file = File(filePath);
       await file.writeAsString(docContent, encoding: utf8);
 
-      await SharePlus.instance.shareXFiles(
+      await SharePlus.shareXFiles(
         [XFile(filePath)],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
@@ -282,7 +282,7 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       await file.writeAsBytes(await pdf.save());
       
-      await SharePlus.instance.shareXFiles(
+      await SharePlus.shareXFiles(
         [XFile(filePath)],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
