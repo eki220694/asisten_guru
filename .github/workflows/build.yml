@@ -17,7 +17,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.0' # Menggunakan versi yang lebih stabil
+        flutter-version: '3.24.0' # Versi yang menyediakan Dart SDK ^3.8.1
         channel: 'stable'
         
     - name: Get dependencies
