@@ -1,58 +1,24 @@
-# Perbaikan Masalah Build Gradle pada Flutter
+# Perbaikan Versi Gradle untuk Build Android
 
 ## Masalah
-Ketika membangun aplikasi Flutter untuk Android, terjadi error terkait tipe data pada file `android/build.gradle.kts`:
+Project mengalami kegagalan build di GitHub Actions dengan error:
 ```
-Type mismatch: inferred type is String but File! was expected
+Minimum supported Gradle version is 8.9. Current version is 8.4. If using the gradle wrapper, try editing the distributionUrl in /home/runner/work/asisten_guru/asisten_guru/android/gradle/wrapper/gradle-wrapper.properties to gradle-8.9-all.zip
 ```
+
+Ini terjadi karena versi Gradle yang digunakan (8.4) lebih rendah dari versi minimum yang dibutuhkan oleh plugin Android versi 8.7.3 (8.9).
 
 ## Solusi
-Masalah ini terjadi karena pada file `android/build.gradle.kts`, properti `buildDir` seharusnya menerima objek bertipe `File`, bukan `String`.
+Memperbarui file `gradle-wrapper.properties` untuk menggunakan Gradle versi 8.9.
 
-### Perbaikan yang Diperlukan
-File `android/build.gradle.kts` harus menggunakan fungsi `file()` untuk mengubah string path menjadi objek File:
+### Perubahan yang Dilakukan
+```properties
+# Sebelum
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-all.zip
 
-```kotlin
-// Yang salah:
-rootProject.buildDir = "../build"
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-
-// Yang benar:
-rootProject.buildDir = file("../build")
-subprojects {
-    project.buildDir = file("${rootProject.buildDir}/${project.name}")
-}
+# Setelah
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-all.zip
 ```
 
-## Langkah-langkah Perbaikan
-
-1. Buka file `android/build.gradle.kts` di editor Anda.
-
-2. Pastikan baris yang mengatur `buildDir` menggunakan fungsi `file()`:
-   ```kotlin
-   rootProject.buildDir = file("../build")
-   subprojects {
-       project.buildDir = file("${rootProject.buildDir}/${project.name}")
-   }
-   ```
-
-3. Simpan perubahan file tersebut.
-
-4. Tambahkan file ke Git:
-   ```bash
-   git add android/build.gradle.kts
-   ```
-
-5. Commit perubahan:
-   ```bash
-   git commit -m "Fix build.gradle.kts: Ensure buildDir uses File type"
-   ```
-
-6. Push perubahan ke repository:
-   ```bash
-   git push origin main
-   ```
-
-Setelah melakukan langkah-langkah di atas, pipeline GitHub Actions seharusnya berhasil membangun aplikasi Android Anda tanpa error tipe data.
+## Verifikasi
+Setelah perubahan ini, build Android seharusnya dapat berjalan dengan sukses di GitHub Actions karena versi Gradle sudah sesuai dengan kebutuhan plugin Android.
