@@ -105,7 +105,7 @@ class _QuizListScreenState extends State<QuizListScreen> {
                       const Spacer(),
                       Chip(
                         label: Text('${quizzesInSubject.length} kuis'),
-                        backgroundColor: Colors.deepPurple.withOpacity(0.1),
+                        backgroundColor: Colors.deepPurple.withValues(alpha: 0.1),
                         labelStyle: const TextStyle(color: Colors.deepPurple),
                       ),
                     ],

@@ -1,16 +1,12 @@
 import 'dart:io';
 import 'package:asisten_guru/models/question_ai_request.dart';
 import 'package:asisten_guru/models/generated_question.dart';
-import 'package:asisten_guru/services/ai_question_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:convert';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:collection/collection.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class QuestionResultScreen extends StatefulWidget {
   final QuestionAiRequest request;
@@ -152,8 +148,8 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
 
       final xFile = XFile(filePath, mimeType: 'application/msword');
 
-      await Share.shareXFiles(
-        [xFile],
+      await SharePlus().shareFiles(
+        [filePath],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
       );
@@ -286,10 +282,8 @@ class _QuestionResultScreenState extends State<QuestionResultScreen> {
       
       await file.writeAsBytes(await pdf.save());
       
-      final xFile = XFile(filePath, mimeType: 'application/pdf');
-      
-      await Share.shareXFiles(
-        [xFile],
+      await SharePlus().shareFiles(
+        [filePath],
         subject: 'Soal ${widget.request.subject} - ${widget.request.grade}',
         text: 'Berikut adalah file soal yang dihasilkan.',
       );

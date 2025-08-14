@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:collection/collection.dart';
 import '../database/database_helper.dart';
 import '../models/attendance.dart';
 import '../models/class.dart';
@@ -159,7 +158,9 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                     status: currentStatus);
                 await _dbHelper.updateAttendance(updatedRecord);
                 _loadData();
-                Navigator.pop(context);
+                if (mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: Text('Simpan'),
             ),
