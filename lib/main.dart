@@ -1,7 +1,7 @@
 import 'package:asisten_guru/screens/rpp_ai_input_screen.dart';
 import 'package:asisten_guru/screens/question_generator_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 import 'screens/student_list_screen.dart';
 import 'screens/attendance_screen.dart';
 import 'screens/attendance_history_screen.dart';
@@ -10,8 +10,6 @@ import 'screens/subject_list_screen.dart';
 import 'screens/quiz_list_screen.dart';
 
 void main() {
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
   runApp(const MyApp());
 }
 
