@@ -24,9 +24,9 @@ jobs:
       run: |
         flutter pub get
         
-    - name: Analyze project (warnings allowed)
+    - name: Analyze project
       run: |
-        flutter analyze || echo "Analysis completed with warnings (continuing build)"
+        flutter analyze
         
     - name: Clean project
       run: |
