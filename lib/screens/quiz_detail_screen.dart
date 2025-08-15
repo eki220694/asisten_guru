@@ -105,7 +105,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                   var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
 
                   return DropdownButtonFormField<int>(
-                    initialValue: validSelectedId,
+                    value: validSelectedId,
                     decoration: const InputDecoration(
                       labelText: 'Mata Pelajaran',
                       border: OutlineInputBorder(),
@@ -122,6 +122,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                       });
                     },
                     validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                    // ignore: deprecated_member_use
                   );
                 },
               ),

@@ -192,7 +192,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                initialValue: _questionType,
+                value: _questionType,
                 decoration: const InputDecoration(
                   labelText: 'Tipe Soal',
                   border: OutlineInputBorder(),
@@ -207,10 +207,11 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                     _questionType = value!;
                   });
                 },
+                // ignore: deprecated_member_use
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                initialValue: _difficulty,
+                value: _difficulty,
                 decoration: const InputDecoration(
                   labelText: 'Tingkat Kesulitan',
                   border: OutlineInputBorder(),
@@ -225,6 +226,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                     _difficulty = value!;
                   });
                 },
+                // ignore: deprecated_member_use
               ),
               const SizedBox(height: 24),
               ElevatedButton(

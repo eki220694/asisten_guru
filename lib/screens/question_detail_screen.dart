@@ -154,7 +154,7 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                initialValue: _questionType,
+                value: _questionType,
                 decoration: const InputDecoration(
                   labelText: 'Tipe Pertanyaan',
                   border: OutlineInputBorder(),
@@ -172,6 +172,7 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                   });
                 },
                 onSaved: (value) => _questionType = value ?? 'multiple_choice',
+                // ignore: deprecated_member_use
               ),
               const SizedBox(height: 16),
               Row(
@@ -189,7 +190,7 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      initialValue: _difficulty,
+                      value: _difficulty,
                       decoration: const InputDecoration(
                         labelText: 'Tingkat Kesulitan',
                         border: OutlineInputBorder(),
@@ -201,6 +202,7 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                       ],
                       onChanged: (value) => setState(() => _difficulty = value!),
                       onSaved: (value) => _difficulty = value ?? 'medium',
+                      // ignore: deprecated_member_use
                     ),
                   ),
                 ],

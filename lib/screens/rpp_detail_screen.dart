@@ -168,7 +168,7 @@ class RppEditScreenState extends State<RppEditScreen> {
                   var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
 
                   return DropdownButtonFormField<int>(
-                    initialValue: validSelectedId,
+                    value: validSelectedId,
                     decoration: const InputDecoration(labelText: 'Mata Pelajaran'),
                     items: subjects.map((subject) {
                       return DropdownMenuItem<int>(
@@ -182,6 +182,7 @@ class RppEditScreenState extends State<RppEditScreen> {
                       });
                     },
                     validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                    // ignore: deprecated_member_use
                   );
                 },
               ),

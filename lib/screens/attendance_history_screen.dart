@@ -135,13 +135,14 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                   'Tanggal: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date))}'),
               SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                initialValue: currentStatus,
+                value: currentStatus,
                 items: ['Hadir', 'Sakit', 'Izin', 'Alpa'].map((status) {
                   return DropdownMenuItem(value: status, child: Text(status));
                 }).toList(),
                 onChanged: (value) {
                   if (value != null) currentStatus = value;
                 },
+                // ignore: deprecated_member_use
               ),
             ],
           ),
@@ -215,7 +216,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
         children: [
           Expanded(
             child: DropdownButtonFormField<int>(
-              initialValue: _selectedClassId,
+              value: _selectedClassId,
               hint: const Text('Semua Kelas'),
               decoration: const InputDecoration(labelText: 'Filter Kelas'),
               items: [
@@ -231,6 +232,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                 });
                 _filterData();
               },
+              // ignore: deprecated_member_use
             ),
           ),
           const SizedBox(width: 10),

@@ -171,7 +171,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  initialValue: _selectedClassId,
+                  value: _selectedClassId,
                   hint: const Text('Pilih Kelas'),
                   decoration: const InputDecoration(labelText: 'Pilih Kelas'),
                   items: _availableClasses.map<DropdownMenuItem<int>>((Class cls) {
@@ -183,12 +183,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     });
                     _loadStudentsAndAttendance();
                   },
+                  // ignore: deprecated_member_use
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  initialValue: _selectedSubjectId,
+                  value: _selectedSubjectId,
                   hint: const Text('Pilih Mapel'),
                   decoration: const InputDecoration(labelText: 'Pilih Mapel'),
                   items: _availableSubjects.map<DropdownMenuItem<int>>((Subject subject) {
@@ -200,6 +201,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     });
                     _loadStudentsAndAttendance();
                   },
+                  // ignore: deprecated_member_use
                 ),
               ),
             ],

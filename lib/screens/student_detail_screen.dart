@@ -96,7 +96,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                   var validSelectedId = _selectedClassId != null && classes.any((c) => c.id == _selectedClassId) ? _selectedClassId : null;
 
                   return DropdownButtonFormField<int>(
-                    initialValue: validSelectedId,
+                    value: validSelectedId,
                     decoration: const InputDecoration(labelText: 'Kelas'),
                     items: classes.map((cls) {
                       return DropdownMenuItem<int>(
@@ -110,6 +110,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                       });
                     },
                     validator: (value) => value == null ? 'Pilih kelas' : null,
+                    // ignore: deprecated_member_use
                   );
                 },
               ),
