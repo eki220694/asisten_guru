@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Konfigurasi untuk menangani error checkReleaseAarMetadata -->
+    <string name="app_name">Asisten Guru</string>
+    <string name="file_picker_authority">com.example.asisten_guru.fileprovider</string>
+</resources>

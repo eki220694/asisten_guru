@@ -1,0 +1,4 @@
+# Konfigurasi untuk menangani error checkReleaseAarMetadata
+android.enableJetifier=true
+android.useAndroidX=true
+android.enableR8=true
