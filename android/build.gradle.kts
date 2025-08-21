@@ -20,23 +20,25 @@ allprojects {
     }
 }
 
-rootProject.buildDir = file("../build")
+// Memperbaiki penggunaan buildDir yang deprecated
+rootProject.layout.buildDirectory.set(file("../build"))
 subprojects {
-    project.buildDir = file("${rootProject.buildDir}/${project.name}")
+    project.layout.buildDirectory.set(file("${rootProject.layout.buildDirectory.get()}/${project.name}"))
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory.get())
 }
 
 subprojects {
     afterEvaluate { 
         if (project.plugins.hasPlugin("com.android.application") ||
             project.plugins.hasPlugin("com.android.library")) {
-            project.configure<com.android.build.gradle.BaseExtension> {
+            project.extensions.configure<com.android.build.gradle.BaseExtension> {
                 compileSdkVersion(34)
                 
                 // Konfigurasi tambahan untuk menangani error checkReleaseAarMetadata
@@ -81,18 +83,6 @@ subprojects {
             force("androidx.annotation:annotation:1.7.1")
             force("androidx.fragment:fragment:1.6.2")
             force("androidx.activity:activity:1.8.2")
-        }
-    }
-}
-
-// Konfigurasi untuk menangani error checkReleaseAarMetadata
-subprojects {
-    afterEvaluate {
-        if (project.hasProperty("android")) {
-            project.android.compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_1_8
-                targetCompatibility = JavaVersion.VERSION_1_8
-            }
         }
     }
 }

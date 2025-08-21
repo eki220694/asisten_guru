@@ -98,51 +98,23 @@ android {
             )
         }
     }
-    
-    // Konfigurasi untuk menangani error checkReleaseAarMetadata
-subprojects {
-    configurations.all {
-        resolutionStrategy {
-            force("androidx.core:core-ktx:1.12.0")
-            force("androidx.appcompat:appcompat:1.6.1")
-            force("androidx.lifecycle:lifecycle-common:2.7.0")
-            force("androidx.lifecycle:lifecycle-runtime:2.7.0")
-            force("androidx.lifecycle:lifecycle-process:2.7.0")
-            force("androidx.arch.core:core-common:2.2.0")
-            force("androidx.collection:collection:1.4.0")
-            force("androidx.annotation:annotation:1.7.1")
-            force("androidx.fragment:fragment:1.6.2")
-            force("androidx.activity:activity:1.8.2")
-        }
-        
-        // Konfigurasi untuk menangani error checkReleaseAarMetadata
-        resolutionStrategy.eachDependency {
-            if (requested.group == "androidx.lifecycle" && requested.name == "lifecycle-common") {
-                useVersion("2.7.0")
-            }
-            if (requested.group == "androidx.core" && requested.name == "core-ktx") {
-                useVersion("1.12.0")
-            }
-            if (requested.group == "androidx.appcompat" && requested.name == "appcompat") {
-                useVersion("1.6.1")
-            }
-        }
-    }
-}
 
 // Konfigurasi tambahan untuk menangani error checkReleaseAarMetadata
-android.applicationVariants.all { variant ->
-    variant.outputs.all {
-        processManifestProvider.get().doLast {
+android.applicationVariants.all {
+    it.outputs.all {
+        it.processManifestProvider.get().doLast {
             // Konfigurasi untuk menangani error checkReleaseAarMetadata
-            File(manifestOutputDirectory.get().asFile, "AndroidManifest.xml").text = 
-                File(manifestOutputDirectory.get().asFile, "AndroidManifest.xml").text.replaceAll(
-                    "android:usesCleartextTraffic=\"false\"", 
-                    "android:usesCleartextTraffic=\"true\""
+            val manifestFile = File(it.manifestOutputDirectory.get().asFile, "AndroidManifest.xml")
+            if (manifestFile.exists()) {
+                manifestFile.writeText(
+                    manifestFile.readText().replace(
+                        "android:usesCleartextTraffic=\"false\"", 
+                        "android:usesCleartextTraffic=\"true\""
+                    )
                 )
+            }
         }
     }
-}
 }
 
 flutter {
