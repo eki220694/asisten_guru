@@ -19,7 +19,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "com.android.application") {
-                useModule("com.android.tools.build:gradle:8.12.0")
+                useModule("com.android.tools.build:gradle:8.13.0")
             }
         }
     }
@@ -30,7 +30,7 @@ gradle.projectsLoaded {
     gradle.rootProject.allprojects.forEach { project ->
         project.configurations.all {
             resolutionStrategy {
-                force("com.android.tools.build:gradle:8.12.0")
+                force("com.android.tools.build:gradle:8.13.0")
             }
         }
     }
@@ -38,7 +38,7 @@ gradle.projectsLoaded {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "8.12.0" apply false
+    id("com.android.application") version "8.13.0" apply false
     id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
