@@ -57,7 +57,7 @@ class AiQuestionService {
         // Soal mudah tentang konsep dasar
         List<String> easyQuestions = [
           "Apa yang dimaksud dengan '$mainTopic' dalam konteks ${request.subject}?",
-          "Apa fungna utama dari '$mainTopic' dalam ${request.subject}?",
+          "Apa fungsi utama dari '$mainTopic' dalam ${request.subject}?",
           "Manakah yang merupakan ciri utama dari '$mainTopic'?",
           "Apa definisi dasar dari '$mainTopic'?",
         ];
@@ -188,6 +188,16 @@ class AiQuestionService {
     
     // Acak urutan opsi jawaban
     options.shuffle(_random);
+    
+    // Pastikan satu opsi ditandai sebagai benar
+    bool hasCorrectOption = options.any((option) => option.isCorrect);
+    if (!hasCorrectOption && options.isNotEmpty) {
+      // Jika tidak ada opsi yang benar, tandai yang pertama sebagai benar
+      options[0] = GeneratedQuestionOption(
+        text: options[0].text,
+        isCorrect: true,
+      );
+    }
     
     return GeneratedQuestion(
       questionText: "$number. $questionText",

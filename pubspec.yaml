@@ -40,15 +40,17 @@ dependencies:
   collection: ^1.18.0
   flutter_markdown: ^0.7.7+1
   flutter_html: ^3.0.0
-  share_plus: ^11.0.0
+  share_plus: ^11.1.0
   html: ^0.15.4
-  file_picker: ^8.0.3
+  file_picker: ^10.3.2
   pdf: ^3.10.4
   docx_template: ^0.4.0
   pdfx: ^2.9.2
   syncfusion_flutter_pdf: ^30.2.4
   http: ^1.5.0
   path: ^1.9.0
+  cross_file: ^0.3.4+2
+  build_runner: ^2.7.0
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +61,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

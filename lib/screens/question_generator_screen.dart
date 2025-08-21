@@ -4,11 +4,11 @@ import 'package:asisten_guru/models/generated_question.dart';
 import 'package:asisten_guru/screens/question_result_screen.dart';
 import 'package:asisten_guru/services/ai_question_service.dart';
 import 'package:asisten_guru/services/real_ai_question_service.dart';
+import 'package:asisten_guru/services/improved_ai_question_service.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:docx_template/docx_template.dart';
 
 class QuestionGeneratorScreen extends StatefulWidget {
   const QuestionGeneratorScreen({super.key});
@@ -49,23 +49,25 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
     try {
       if (extension == '.pdf') {
         // Membaca konten file PDF menggunakan syncfusion_flutter_pdf
+        PdfDocument? pdfDocument;
         try {
-          final pdfDocument = PdfDocument(inputBytes: await file.readAsBytes());
+          pdfDocument = PdfDocument(inputBytes: await file.readAsBytes());
           String content = '';
           // Membaca teks dari setiap halaman
           for (int i = 0; i < pdfDocument.pages.count; i++) {
             final text = PdfTextExtractor(pdfDocument).extractText(startPageIndex: i, endPageIndex: i);
             content += text;
           }
-          pdfDocument.dispose();
           return content;
         } catch (e) {
           return "Gagal membaca file PDF: $e";
+        } finally {
+          // Memastikan objek PdfDocument dibuang
+          pdfDocument?.dispose();
         }
       } else if (extension == '.docx') {
         // Membaca konten file Word .docx
         try {
-          await DocxTemplate.fromBytes(await file.readAsBytes());
           // Untuk file .docx, kita akan mengembalikan pesan bahwa ini adalah file Word
           // Implementasi penuh memerlukan parsing yang lebih kompleks
           return "Ini adalah file Word (.docx) dengan konten yang dapat digunakan untuk membuat soal.";
@@ -265,15 +267,22 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                     
                     List<GeneratedQuestion> generatedQuestions = [];
                     try {
-                      final service = RealAiQuestionService();
-                      generatedQuestions = await service.generateQuestions(request);
+                      // Coba menggunakan improved AI service terlebih dahulu
+                      final improvedService = ImprovedAiQuestionService(
+                        Platform.environment['OPENAI_API_KEY'] ?? ''
+                      );
+                      generatedQuestions = await improvedService.generateQuestions(request);
                     } catch (e) {
-                      // Log error untuk debugging
-                      // print('Error using AI service: $e'); // Removed for production
-                      // Jika terjadi error, gunakan implementasi lama
-                      if (!mounted) return;
-                      final fallbackService = AiQuestionService();
-                      generatedQuestions = fallbackService.generateQuestions(request);
+                      // Jika improved service gagal, fallback ke real AI service
+                      try {
+                        final service = RealAiQuestionService();
+                        generatedQuestions = await service.generateQuestions(request);
+                      } catch (e2) {
+                        // Jika real AI service juga gagal, gunakan implementasi lama
+                        if (!mounted) return;
+                        final fallbackService = AiQuestionService();
+                        generatedQuestions = fallbackService.generateQuestions(request);
+                      }
                     }
 
                     if (!mounted) return;
@@ -303,10 +312,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                     });
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text('Buat Soal Sekarang'),
+                child: const Text('Buat Soal'),
               ),
             ],
           ),

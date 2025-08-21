@@ -144,14 +144,17 @@ class QuestionResultScreenState extends State<QuestionResultScreen> {
     try {
       final docContent = _generateWordDocument();
       final tempDir = await getTemporaryDirectory();
-      final filePath = '${tempDir.path}/soal_${widget.request.subject}_${DateTime.now().millisecondsSinceEpoch}.doc';
+      final fileName = 'soal_${widget.request.subject}_${DateTime.now().millisecondsSinceEpoch}.doc';
+      final filePath = '${tempDir.path}/$fileName';
       final file = File(filePath);
       await file.writeAsString(docContent, encoding: utf8);
 
-      // Perlu menyimpan file terlebih dahulu sebelum sharing
-      await SharePlus.instance.share(
-        ShareParams(text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath'),
+      // Gunakan SharePlus dengan ShareParams untuk membagikan file
+      final params = ShareParams(
+        text: 'Berikut adalah file soal yang dihasilkan.',
+        files: [XFile(filePath)],
       );
+      await SharePlus.instance.share(params);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -276,15 +279,18 @@ class QuestionResultScreenState extends State<QuestionResultScreen> {
       );
       
       final tempDir = await getTemporaryDirectory();
-      final filePath = '${tempDir.path}/soal_${widget.request.subject}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final fileName = 'soal_${widget.request.subject}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final filePath = '${tempDir.path}/$fileName';
       final file = File(filePath);
       
       await file.writeAsBytes(await pdf.save());
       
-      // Perlu menyimpan file terlebih dahulu sebelum sharing
-      await SharePlus.instance.share(
-        ShareParams(text: 'Berikut adalah file soal yang dihasilkan. File tersedia di: $filePath'),
+      // Gunakan SharePlus dengan ShareParams untuk membagikan file
+      final params = ShareParams(
+        text: 'Berikut adalah file soal yang dihasilkan.',
+        files: [XFile(filePath)],
       );
+      await SharePlus.instance.share(params);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

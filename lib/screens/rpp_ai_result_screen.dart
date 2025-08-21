@@ -127,10 +127,12 @@ class RppAiResultScreenState extends State<RppAiResultScreen> {
     final file = File(filePath);
     await file.writeAsString(_rppContent);
 
-    // Perlu menyimpan file terlebih dahulu sebelum sharing
-    await SharePlus.instance.share(
-      ShareParams(text: 'Berikut adalah file RPP yang dihasilkan. File tersedia di: $filePath'),
+    // Gunakan SharePlus dengan ShareParams untuk membagikan file
+    final params = ShareParams(
+      text: 'Berikut adalah file RPP yang dihasilkan.',
+      files: [XFile(filePath)],
     );
+    await SharePlus.instance.share(params);
   }
 
   @override

@@ -267,6 +267,11 @@ Materi: ${request.material}
   List<GeneratedQuestion> _fallbackToOldImplementation(QuestionAiRequest request) {
     // Implementasi fallback ke layanan AI lama
     final fallbackService = AiQuestionService();
-    return fallbackService.generateQuestions(request);
+    try {
+      return fallbackService.generateQuestions(request);
+    } catch (e) {
+      // Jika layanan lama juga gagal, kembalikan daftar kosong
+      return [];
+    }
   }
 }
