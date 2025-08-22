@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../database/database_helper.dart';
@@ -16,7 +15,7 @@ class AttendanceScreen extends StatefulWidget {
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
-  
+
   List<Class> _availableClasses = [];
   List<Subject> _availableSubjects = [];
   List<Student> _studentsInClass = [];
@@ -35,7 +34,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Future<void> _loadInitialData() async {
-    setState(() { _isLoading = true; });
+    setState(() {
+      _isLoading = true;
+    });
     final classes = await _dbHelper.getClasses();
     final subjects = await _dbHelper.getSubjects();
     setState(() {
@@ -49,18 +50,29 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       }
     });
     await _loadStudentsAndAttendance();
-    setState(() { _isLoading = false; });
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _loadStudentsAndAttendance() async {
     if (_selectedClassId == null || _selectedSubjectId == null) return;
-    setState(() { _isLoading = true; });
+    setState(() {
+      _isLoading = true;
+    });
 
     final allStudents = await _dbHelper.getStudents();
-    final filteredStudents = allStudents.where((s) => s.classId == _selectedClassId).toList();
+    final filteredStudents = allStudents
+        .where((s) => s.classId == _selectedClassId)
+        .toList();
 
     final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    final attendanceRecords = await _dbHelper.getAttendanceByDateClassAndSubject(formattedDate, _selectedClassId!, _selectedSubjectId!);
+    final attendanceRecords = await _dbHelper
+        .getAttendanceByDateClassAndSubject(
+          formattedDate,
+          _selectedClassId!,
+          _selectedSubjectId!,
+        );
 
     setState(() {
       _studentsInClass = filteredStudents;
@@ -96,14 +108,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Future<void> _saveAttendance() async {
-    if (_selectedClassId == null || _selectedSubjectId == null || _studentsInClass.isEmpty) return;
+    if (_selectedClassId == null ||
+        _selectedSubjectId == null ||
+        _studentsInClass.isEmpty)
+      return;
 
     final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
     final batch = (await _dbHelper.database).batch();
     int operations = 0;
 
     for (var student in _studentsInClass) {
-      final status = _attendanceStatus[student.id] ?? 'Hadir'; // Default to Hadir
+      final status =
+          _attendanceStatus[student.id] ?? 'Hadir'; // Default to Hadir
       final existingId = _existingAttendanceIds[student.id];
 
       final attendance = Attendance(
@@ -116,7 +132,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       );
 
       if (existingId != null) {
-        batch.update('attendance', attendance.toMap(), where: 'id = ?', whereArgs: [existingId]);
+        batch.update(
+          'attendance',
+          attendance.toMap(),
+          where: 'id = ?',
+          whereArgs: [existingId],
+        );
         operations++;
       } else {
         batch.insert('attendance', attendance.toMap());
@@ -132,11 +153,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       );
     } else {
       if (!mounted) return;
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Tidak ada perubahan untuk disimpan.')),
       );
     }
-    
+
     await _loadStudentsAndAttendance(); // Refresh data
   }
 
@@ -151,10 +172,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _selectedClassId == null
-                    ? const Center(child: Text('Silakan buat kelas terlebih dahulu.'))
-                    : _studentsInClass.isEmpty
-                        ? const Center(child: Text('Tidak ada siswa di kelas ini.'))
-                        : _buildStudentList(),
+                ? const Center(
+                    child: Text('Silakan buat kelas terlebih dahulu.'),
+                  )
+                : _studentsInClass.isEmpty
+                ? const Center(child: Text('Tidak ada siswa di kelas ini.'))
+                : _buildStudentList(),
           ),
           _buildSaveButton(),
         ],
@@ -171,11 +194,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  value: _selectedClassId,
+                  initialValue: _selectedClassId,
                   hint: const Text('Pilih Kelas'),
                   decoration: const InputDecoration(labelText: 'Pilih Kelas'),
-                  items: _availableClasses.map<DropdownMenuItem<int>>((Class cls) {
-                    return DropdownMenuItem<int>(value: cls.id, child: Text(cls.name));
+                  items: _availableClasses.map<DropdownMenuItem<int>>((
+                    Class cls,
+                  ) {
+                    return DropdownMenuItem<int>(
+                      value: cls.id,
+                      child: Text(cls.name),
+                    );
                   }).toList(),
                   onChanged: (int? newValue) {
                     setState(() {
@@ -189,11 +217,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: DropdownButtonFormField<int>(
-                  value: _selectedSubjectId,
+                  initialValue: _selectedSubjectId,
                   hint: const Text('Pilih Mapel'),
                   decoration: const InputDecoration(labelText: 'Pilih Mapel'),
-                  items: _availableSubjects.map<DropdownMenuItem<int>>((Subject subject) {
-                    return DropdownMenuItem<int>(value: subject.id, child: Text(subject.name));
+                  items: _availableSubjects.map<DropdownMenuItem<int>>((
+                    Subject subject,
+                  ) {
+                    return DropdownMenuItem<int>(
+                      value: subject.id,
+                      child: Text(subject.name),
+                    );
                   }).toList(),
                   onChanged: (int? newValue) {
                     setState(() {
@@ -226,8 +259,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ElevatedButton(onPressed: () => _markAllAs('Hadir'), child: const Text('Semua Hadir')),
-          ElevatedButton(onPressed: () => _markAllAs('Alpa'), child: const Text('Semua Alpa')),
+          ElevatedButton(
+            onPressed: () => _markAllAs('Hadir'),
+            child: const Text('Semua Hadir'),
+          ),
+          ElevatedButton(
+            onPressed: () => _markAllAs('Alpa'),
+            child: const Text('Semua Alpa'),
+          ),
         ],
       ),
     );
@@ -253,8 +292,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               },
               items: <String>['Hadir', 'Sakit', 'Izin', 'Alpa']
                   .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(value: value, child: Text(value));
-              }).toList(),
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  })
+                  .toList(),
             ),
           ),
         );

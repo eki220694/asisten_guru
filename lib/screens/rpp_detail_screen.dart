@@ -98,14 +98,23 @@ class RppEditScreenState extends State<RppEditScreen> {
   void initState() {
     super.initState();
     _selectedSubjectId = widget.rpp?.subjectId;
-    _isAiGenerated = widget.rpp?.content != null && widget.rpp!.content!.isNotEmpty;
+    _isAiGenerated =
+        widget.rpp?.content != null && widget.rpp!.content!.isNotEmpty;
 
     _titleController = TextEditingController(text: widget.rpp?.title ?? '');
     _contentController = TextEditingController(text: widget.rpp?.content ?? '');
-    _objectivesController = TextEditingController(text: widget.rpp?.objectives ?? '');
-    _materialsController = TextEditingController(text: widget.rpp?.materials ?? '');
-    _activitiesController = TextEditingController(text: widget.rpp?.activities ?? '');
-    _assessmentController = TextEditingController(text: widget.rpp?.assessment ?? '');
+    _objectivesController = TextEditingController(
+      text: widget.rpp?.objectives ?? '',
+    );
+    _materialsController = TextEditingController(
+      text: widget.rpp?.materials ?? '',
+    );
+    _activitiesController = TextEditingController(
+      text: widget.rpp?.activities ?? '',
+    );
+    _assessmentController = TextEditingController(
+      text: widget.rpp?.assessment ?? '',
+    );
 
     _subjectsFuture = _dbHelper.getSubjects();
   }
@@ -146,10 +155,7 @@ class RppEditScreenState extends State<RppEditScreen> {
       appBar: AppBar(
         title: Text(widget.rpp == null ? 'Tambah RPP' : 'Edit RPP'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveRpp,
-          )
+          IconButton(icon: const Icon(Icons.save), onPressed: _saveRpp),
         ],
       ),
       body: Padding(
@@ -165,11 +171,17 @@ class RppEditScreenState extends State<RppEditScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   var subjects = snapshot.data!;
-                  var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
+                  var validSelectedId =
+                      _selectedSubjectId != null &&
+                          subjects.any((s) => s.id == _selectedSubjectId)
+                      ? _selectedSubjectId
+                      : null;
 
                   return DropdownButtonFormField<int>(
-                    value: validSelectedId,
-                    decoration: const InputDecoration(labelText: 'Mata Pelajaran'),
+                    initialValue: validSelectedId,
+                    decoration: const InputDecoration(
+                      labelText: 'Mata Pelajaran',
+                    ),
                     items: subjects.map((subject) {
                       return DropdownMenuItem<int>(
                         value: subject.id,
@@ -181,7 +193,8 @@ class RppEditScreenState extends State<RppEditScreen> {
                         _selectedSubjectId = value;
                       });
                     },
-                    validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                    validator: (value) =>
+                        value == null ? 'Pilih mata pelajaran' : null,
                     // ignore: deprecated_member_use
                   );
                 },
@@ -189,29 +202,39 @@ class RppEditScreenState extends State<RppEditScreen> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: 'Judul RPP'),
-                validator: (value) => value!.isEmpty ? 'Judul tidak boleh kosong' : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Judul tidak boleh kosong' : null,
               ),
               if (_isAiGenerated)
                 TextFormField(
                   controller: _contentController,
-                  decoration: const InputDecoration(labelText: 'Konten RPP (Markdown)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Konten RPP (Markdown)',
+                  ),
                   maxLines: 20,
-                  validator: (value) => value!.isEmpty ? 'Konten tidak boleh kosong' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Konten tidak boleh kosong' : null,
                 )
               else ...[
                 TextFormField(
                   controller: _objectivesController,
-                  decoration: const InputDecoration(labelText: 'Tujuan Pembelajaran'),
+                  decoration: const InputDecoration(
+                    labelText: 'Tujuan Pembelajaran',
+                  ),
                   maxLines: 3,
                 ),
                 TextFormField(
                   controller: _materialsController,
-                  decoration: const InputDecoration(labelText: 'Materi Pembelajaran'),
+                  decoration: const InputDecoration(
+                    labelText: 'Materi Pembelajaran',
+                  ),
                   maxLines: 5,
                 ),
                 TextFormField(
                   controller: _activitiesController,
-                  decoration: const InputDecoration(labelText: 'Kegiatan Pembelajaran'),
+                  decoration: const InputDecoration(
+                    labelText: 'Kegiatan Pembelajaran',
+                  ),
                   maxLines: 5,
                 ),
                 TextFormField(

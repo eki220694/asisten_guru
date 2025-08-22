@@ -61,10 +61,16 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
     }
   }
 
-  void _navigateAndRefreshQuestion(BuildContext context, Question? question) async {
+  void _navigateAndRefreshQuestion(
+    BuildContext context,
+    Question? question,
+  ) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => QuestionDetailScreen(quizId: widget.quiz!.id!, question: question)),
+      MaterialPageRoute(
+        builder: (context) =>
+            QuestionDetailScreen(quizId: widget.quiz!.id!, question: question),
+      ),
     );
 
     if (result == true) {
@@ -102,10 +108,14 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   var subjects = snapshot.data!;
-                  var validSelectedId = _selectedSubjectId != null && subjects.any((s) => s.id == _selectedSubjectId) ? _selectedSubjectId : null;
+                  var validSelectedId =
+                      _selectedSubjectId != null &&
+                          subjects.any((s) => s.id == _selectedSubjectId)
+                      ? _selectedSubjectId
+                      : null;
 
                   return DropdownButtonFormField<int>(
-                    value: validSelectedId,
+                    initialValue: validSelectedId,
                     decoration: const InputDecoration(
                       labelText: 'Mata Pelajaran',
                       border: OutlineInputBorder(),
@@ -121,7 +131,8 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                         _selectedSubjectId = value;
                       });
                     },
-                    validator: (value) => value == null ? 'Pilih mata pelajaran' : null,
+                    validator: (value) =>
+                        value == null ? 'Pilih mata pelajaran' : null,
                     // ignore: deprecated_member_use
                   );
                 },
@@ -134,7 +145,8 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                   hintText: 'Masukkan judul kuis',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Judul tidak boleh kosong' : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Judul tidak boleh kosong' : null,
                 onSaved: (value) => _title = value!,
               ),
               const SizedBox(height: 20),
@@ -154,8 +166,14 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Pertanyaan:', style: Theme.of(context).textTheme.headlineSmall),
-                    Text('${_questions.length} soal', style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      'Pertanyaan:',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    Text(
+                      '${_questions.length} soal',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -165,14 +183,19 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.question_mark, size: 48, color: Colors.grey),
+                              const Icon(
+                                Icons.question_mark,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
                               const SizedBox(height: 16),
                               const Text('Belum ada pertanyaan'),
                               const SizedBox(height: 16),
                               OutlinedButton.icon(
                                 icon: const Icon(Icons.add),
                                 label: const Text('Tambah Pertanyaan'),
-                                onPressed: () => _navigateAndRefreshQuestion(context, null),
+                                onPressed: () =>
+                                    _navigateAndRefreshQuestion(context, null),
                               ),
                             ],
                           ),
@@ -186,16 +209,26 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                               child: ListTile(
                                 title: Text(question.questionText),
                                 subtitle: Text(
-                                  question.questionType == 'multiple_choice' 
-                                    ? 'Pilihan Ganda' 
-                                    : 'Esai',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  question.questionType == 'multiple_choice'
+                                      ? 'Pilihan Ganda'
+                                      : 'Esai',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                onTap: () => _navigateAndRefreshQuestion(context, question),
+                                onTap: () => _navigateAndRefreshQuestion(
+                                  context,
+                                  question,
+                                ),
                                 trailing: IconButton(
-                                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.redAccent,
+                                  ),
                                   onPressed: () async {
-                                    await _dbHelper.deleteQuestion(question.id!);
+                                    await _dbHelper.deleteQuestion(
+                                      question.id!,
+                                    );
                                     _loadQuestions();
                                   },
                                 ),

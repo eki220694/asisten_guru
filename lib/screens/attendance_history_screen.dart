@@ -38,7 +38,9 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   }
 
   Future<void> _loadData() async {
-    setState(() { _isLoading = true; });
+    setState(() {
+      _isLoading = true;
+    });
 
     final records = await (widget.studentId == null
         ? _dbHelper.getAllAttendance()
@@ -68,11 +70,14 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
       _filteredRecords = _allRecords.where((record) {
         final classMatch =
             _selectedClassId == null || record.classId == _selectedClassId;
-        final dateMatch = _selectedDateRange == null ||
-            (DateTime.parse(record.date).isAfter(_selectedDateRange!.start
-                    .subtract(const Duration(days: 1))) &&
-                DateTime.parse(record.date)
-                    .isBefore(_selectedDateRange!.end.add(const Duration(days: 1))));
+        final dateMatch =
+            _selectedDateRange == null ||
+            (DateTime.parse(record.date).isAfter(
+                  _selectedDateRange!.start.subtract(const Duration(days: 1)),
+                ) &&
+                DateTime.parse(record.date).isBefore(
+                  _selectedDateRange!.end.add(const Duration(days: 1)),
+                ));
         return classMatch && dateMatch;
       }).toList();
     });
@@ -94,9 +99,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   }
 
   String _getStudentName(int studentId) {
-    return _allStudents
-            .firstWhereOrNull((s) => s.id == studentId)
-            ?.name ??
+    return _allStudents.firstWhereOrNull((s) => s.id == studentId)?.name ??
         'Siswa tidak ditemukan';
   }
 
@@ -132,10 +135,11 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
             children: [
               Text('Siswa: ${_getStudentName(record.studentId)}'),
               Text(
-                  'Tanggal: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date))}'),
+                'Tanggal: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date))}',
+              ),
               SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: currentStatus,
+                initialValue: currentStatus,
                 items: ['Hadir', 'Sakit', 'Izin', 'Alpa'].map((status) {
                   return DropdownMenuItem(value: status, child: Text(status));
                 }).toList(),
@@ -148,18 +152,21 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
           ),
           actions: [
             TextButton(
-                onPressed: () => Navigator.pop(context), child: Text('Batal')),
+              onPressed: () => Navigator.pop(context),
+              child: Text('Batal'),
+            ),
             ElevatedButton(
               onPressed: () async {
                 // Simpan context dalam variabel lokal
                 final dialogContext = context;
                 final updatedRecord = Attendance(
-                    id: record.id,
-                    studentId: record.studentId,
-                    classId: record.classId,
-                    subjectId: record.subjectId,
-                    date: record.date,
-                    status: currentStatus);
+                  id: record.id,
+                  studentId: record.studentId,
+                  classId: record.classId,
+                  subjectId: record.subjectId,
+                  date: record.date,
+                  status: currentStatus,
+                );
                 await _dbHelper.updateAttendance(updatedRecord);
                 if (!mounted) return;
                 await _loadData();
@@ -188,9 +195,11 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_student != null
-            ? 'Riwayat Absensi: ${_student!.name}'
-            : 'Riwayat Absensi'),
+        title: Text(
+          _student != null
+              ? 'Riwayat Absensi: ${_student!.name}'
+              : 'Riwayat Absensi',
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -201,7 +210,8 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                 Expanded(
                   child: _filteredRecords.isEmpty
                       ? const Center(
-                          child: Text('Tidak ada riwayat absensi yang cocok.'))
+                          child: Text('Tidak ada riwayat absensi yang cocok.'),
+                        )
                       : _buildGroupedList(sortedDates, groupedRecords),
                 ),
               ],
@@ -216,15 +226,18 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
         children: [
           Expanded(
             child: DropdownButtonFormField<int>(
-              value: _selectedClassId,
+              initialValue: _selectedClassId,
               hint: const Text('Semua Kelas'),
               decoration: const InputDecoration(labelText: 'Filter Kelas'),
               items: [
                 const DropdownMenuItem<int>(
-                    value: null, child: Text('Semua Kelas')),
-                ..._allClasses
-                    .map((cls) =>
-                        DropdownMenuItem(value: cls.id, child: Text(cls.name)))
+                  value: null,
+                  child: Text('Semua Kelas'),
+                ),
+                ..._allClasses.map(
+                  (cls) =>
+                      DropdownMenuItem(value: cls.id, child: Text(cls.name)),
+                ),
               ],
               onChanged: (value) {
                 setState(() {
@@ -240,9 +253,11 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
             child: ElevatedButton.icon(
               onPressed: () => _selectDateRange(context),
               icon: const Icon(Icons.date_range),
-              label: Text(_selectedDateRange == null
-                  ? 'Semua Tanggal'
-                  : '${DateFormat('dd/MM/yy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yy').format(_selectedDateRange!.end)}'),
+              label: Text(
+                _selectedDateRange == null
+                    ? 'Semua Tanggal'
+                    : '${DateFormat('dd/MM/yy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yy').format(_selectedDateRange!.end)}',
+              ),
             ),
           ),
         ],
@@ -260,7 +275,10 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
           children: summary.entries.map((entry) {
             return Column(
               children: [
-                Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  entry.key,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Text(entry.value.toString()),
               ],
             );
@@ -271,7 +289,9 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   }
 
   Widget _buildGroupedList(
-      List<String> sortedDates, Map<String, List<Attendance>> groupedRecords) {
+    List<String> sortedDates,
+    Map<String, List<Attendance>> groupedRecords,
+  ) {
     return ListView.builder(
       itemCount: sortedDates.length,
       itemBuilder: (context, index) {
@@ -281,24 +301,32 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: ExpansionTile(
             title: Text(
-                DateFormat('EEEE, dd MMMM yyyy')
-                    .format(DateTime.parse(date)),
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+              DateFormat('EEEE, dd MMMM yyyy').format(DateTime.parse(date)),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             initiallyExpanded: true,
             children: recordsOnDate.map((record) {
               return ListTile(
                 title: Text(_getStudentName(record.studentId)),
                 subtitle: Text(
-                    '${_getClassName(record.classId)} - ${_getSubjectName(record.subjectId)}'),
+                  '${_getClassName(record.classId)} - ${_getSubjectName(record.subjectId)}',
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(record.status,
-                        style: TextStyle(
-                            color: _getStatusColor(record.status),
-                            fontWeight: FontWeight.bold)),
+                    Text(
+                      record.status,
+                      style: TextStyle(
+                        color: _getStatusColor(record.status),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.edit, size: 18, color: Colors.grey),
+                      icon: const Icon(
+                        Icons.edit,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                       onPressed: () => _editAttendance(record),
                     ),
                   ],

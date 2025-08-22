@@ -21,7 +21,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
   late String _name;
   String? _nis;
   int? _selectedClassId;
-  
+
   late Future<List<Class>> _classesFuture;
 
   @override
@@ -82,7 +82,9 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 initialValue: _nis,
-                decoration: const InputDecoration(labelText: 'NIS (Nomor Induk Siswa)'),
+                decoration: const InputDecoration(
+                  labelText: 'NIS (Nomor Induk Siswa)',
+                ),
                 onSaved: (value) => _nis = value,
               ),
               const SizedBox(height: 16),
@@ -93,10 +95,14 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   var classes = snapshot.data!;
-                  var validSelectedId = _selectedClassId != null && classes.any((c) => c.id == _selectedClassId) ? _selectedClassId : null;
+                  var validSelectedId =
+                      _selectedClassId != null &&
+                          classes.any((c) => c.id == _selectedClassId)
+                      ? _selectedClassId
+                      : null;
 
                   return DropdownButtonFormField<int>(
-                    value: validSelectedId,
+                    initialValue: validSelectedId,
                     decoration: const InputDecoration(labelText: 'Kelas'),
                     items: classes.map((cls) {
                       return DropdownMenuItem<int>(
@@ -129,13 +135,17 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AttendanceHistoryScreen(studentId: widget.student!.id!),
+                          builder: (context) => AttendanceHistoryScreen(
+                            studentId: widget.student!.id!,
+                          ),
                         ),
                       );
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.secondary,
-                      side: BorderSide(color: Theme.of(context).colorScheme.secondary),
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
                   ),
                 ),

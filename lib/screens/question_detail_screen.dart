@@ -30,13 +30,13 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
     _questionText = widget.question?.questionText ?? '';
     _questionType = widget.question?.questionType ?? 'multiple_choice';
     _correctAnswer = widget.question?.correctAnswer;
-    _difficulty = widget.question?.correctAnswer?.split('|').length == 2 
-        ? widget.question!.correctAnswer!.split('|')[1] 
+    _difficulty = widget.question?.correctAnswer?.split('|').length == 2
+        ? widget.question!.correctAnswer!.split('|')[1]
         : 'medium';
-    _category = widget.question?.correctAnswer?.split('|').length == 2 
-        ? widget.question!.correctAnswer!.split('|')[0] 
+    _category = widget.question?.correctAnswer?.split('|').length == 2
+        ? widget.question!.correctAnswer!.split('|')[0]
         : '';
-    
+
     if (widget.question != null) {
       _loadOptions();
     }
@@ -52,8 +52,8 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
       _formKey.currentState!.save();
 
       // Format correctAnswer untuk menyimpan kategori dan tingkat kesulitan
-      String formattedCorrectAnswer = _questionType == 'multiple_choice' 
-          ? '$_category|$_difficulty' 
+      String formattedCorrectAnswer = _questionType == 'multiple_choice'
+          ? '$_category|$_difficulty'
           : (_correctAnswer ?? '');
 
       final question = Question(
@@ -105,7 +105,9 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.question == null ? 'Tambah Pertanyaan' : 'Edit Pertanyaan'),
+        title: Text(
+          widget.question == null ? 'Tambah Pertanyaan' : 'Edit Pertanyaan',
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -120,7 +122,7 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                       '2. Pilih tipe pertanyaan (Pilihan Ganda atau Esai).\n'
                       '3. Untuk pilihan ganda, tambahkan minimal 2 pilihan jawaban dan tandai satu sebagai benar.\n'
                       '4. Untuk esai, isi jawaban yang benar.\n'
-                      '5. Tentukan tingkat kesulitan dan kategori soal (opsional).'
+                      '5. Tentukan tingkat kesulitan dan kategori soal (opsional).',
                     ),
                     actions: [
                       TextButton(
@@ -148,19 +150,24 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                   hintText: 'Masukkan pertanyaan dengan jelas',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Teks pertanyaan tidak boleh kosong' : null,
+                validator: (value) => value!.isEmpty
+                    ? 'Teks pertanyaan tidak boleh kosong'
+                    : null,
                 onSaved: (value) => _questionText = value!,
                 maxLines: 3,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _questionType,
+                initialValue: _questionType,
                 decoration: const InputDecoration(
                   labelText: 'Tipe Pertanyaan',
                   border: OutlineInputBorder(),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'multiple_choice', child: Text('Pilihan Ganda')),
+                  DropdownMenuItem(
+                    value: 'multiple_choice',
+                    child: Text('Pilihan Ganda'),
+                  ),
                   DropdownMenuItem(value: 'essay', child: Text('Esai')),
                 ],
                 onChanged: (value) {
@@ -190,17 +197,21 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _difficulty,
+                      initialValue: _difficulty,
                       decoration: const InputDecoration(
                         labelText: 'Tingkat Kesulitan',
                         border: OutlineInputBorder(),
                       ),
                       items: const [
                         DropdownMenuItem(value: 'easy', child: Text('Mudah')),
-                        DropdownMenuItem(value: 'medium', child: Text('Sedang')),
+                        DropdownMenuItem(
+                          value: 'medium',
+                          child: Text('Sedang'),
+                        ),
                         DropdownMenuItem(value: 'hard', child: Text('Sulit')),
                       ],
-                      onChanged: (value) => setState(() => _difficulty = value!),
+                      onChanged: (value) =>
+                          setState(() => _difficulty = value!),
                       onSaved: (value) => _difficulty = value ?? 'medium',
                       // ignore: deprecated_member_use
                     ),
@@ -217,16 +228,20 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                     border: OutlineInputBorder(),
                   ),
                   maxLines: 3,
-                  validator: (value) => 
-                    _questionType == 'essay' && (value == null || value.isEmpty) 
-                      ? 'Jawaban benar tidak boleh kosong untuk soal esai' 
+                  validator: (value) =>
+                      _questionType == 'essay' &&
+                          (value == null || value.isEmpty)
+                      ? 'Jawaban benar tidak boleh kosong untuk soal esai'
                       : null,
                   onSaved: (value) => _correctAnswer = value,
                 ),
               ],
               if (_questionType == 'multiple_choice') ...[
                 const SizedBox(height: 20),
-                Text('Pilihan Jawaban:', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  'Pilihan Jawaban:',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
                 ListView.builder(
                   shrinkWrap: true,
@@ -247,9 +262,10 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                                   labelText: 'Pilihan ${index + 1}',
                                   border: const OutlineInputBorder(),
                                 ),
-                                validator: (value) => 
-                                  _questionType == 'multiple_choice' && (value == null || value.isEmpty) 
-                                    ? 'Pilihan tidak boleh kosong' 
+                                validator: (value) =>
+                                    _questionType == 'multiple_choice' &&
+                                        (value == null || value.isEmpty)
+                                    ? 'Pilihan tidak boleh kosong'
                                     : null,
                                 onChanged: (value) => option.optionText = value,
                               ),
@@ -273,7 +289,10 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                               ],
                             ),
                             IconButton(
-                              icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent),
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                color: Colors.redAccent,
+                              ),
                               onPressed: () => _removeOption(index),
                             ),
                           ],
@@ -292,12 +311,16 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
                 ),
                 const SizedBox(height: 16),
                 // Validasi bahwa setidaknya satu pilihan ditandai sebagai benar
-                if (_options.isEmpty || !_options.any((option) => option.isCorrect))
+                if (_options.isEmpty ||
+                    !_options.any((option) => option.isCorrect))
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
                       'Harap tandai salah satu pilihan sebagai jawaban yang benar',
-                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
               ],

@@ -45,7 +45,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
 
   Future<String> _readFileContent(File file) async {
     String extension = path.extension(file.path).toLowerCase();
-    
+
     try {
       if (extension == '.pdf') {
         // Membaca konten file PDF menggunakan syncfusion_flutter_pdf
@@ -55,7 +55,9 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
           String content = '';
           // Membaca teks dari setiap halaman
           for (int i = 0; i < pdfDocument.pages.count; i++) {
-            final text = PdfTextExtractor(pdfDocument).extractText(startPageIndex: i, endPageIndex: i);
+            final text = PdfTextExtractor(
+              pdfDocument,
+            ).extractText(startPageIndex: i, endPageIndex: i);
             content += text;
           }
           return content;
@@ -92,9 +94,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Generator Soal AI'),
-      ),
+      appBar: AppBar(title: const Text('Generator Soal AI')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -140,7 +140,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                 ),
                 maxLines: 5,
                 validator: (value) {
-                  if ((_selectedFile == null || _selectedFile!.path.isEmpty) && 
+                  if ((_selectedFile == null || _selectedFile!.path.isEmpty) &&
                       (value == null || value.isEmpty)) {
                     return 'Materi tidak boleh kosong. Anda bisa mengetik materi atau mengunggah file.';
                   }
@@ -154,7 +154,9 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                     child: OutlinedButton.icon(
                       onPressed: _pickFile,
                       icon: const Icon(Icons.upload_file),
-                      label: Text(_fileName ?? 'Unggah File Materi (PDF/DOC/TXT)'),
+                      label: Text(
+                        _fileName ?? 'Unggah File Materi (PDF/DOC/TXT)',
+                      ),
                     ),
                   ),
                   if (_selectedFile != null)
@@ -194,14 +196,20 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _questionType,
+                initialValue: _questionType,
                 decoration: const InputDecoration(
                   labelText: 'Tipe Soal',
                   border: OutlineInputBorder(),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'mixed', child: Text('Campuran (Pilihan Ganda & Esai)')),
-                  DropdownMenuItem(value: 'multiple_choice', child: Text('Pilihan Ganda')),
+                  DropdownMenuItem(
+                    value: 'mixed',
+                    child: Text('Campuran (Pilihan Ganda & Esai)'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'multiple_choice',
+                    child: Text('Pilihan Ganda'),
+                  ),
                   DropdownMenuItem(value: 'essay', child: Text('Esai')),
                 ],
                 onChanged: (value) {
@@ -213,7 +221,7 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _difficulty,
+                initialValue: _difficulty,
                 decoration: const InputDecoration(
                   labelText: 'Tingkat Kesulitan',
                   border: OutlineInputBorder(),
@@ -248,7 +256,11 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                         Future.microtask(() {
                           if (screenContext.mounted) {
                             ScaffoldMessenger.of(screenContext).showSnackBar(
-                              const SnackBar(content: Text('Gagal membaca file. Pastikan file dalam format yang didukung.')),
+                              const SnackBar(
+                                content: Text(
+                                  'Gagal membaca file. Pastikan file dalam format yang didukung.',
+                                ),
+                              ),
                             );
                           }
                         });
@@ -260,28 +272,35 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                       subject: _subjectController.text,
                       grade: _gradeController.text,
                       material: material,
-                      numberOfQuestions: int.parse(_numberOfQuestionsController.text),
+                      numberOfQuestions: int.parse(
+                        _numberOfQuestionsController.text,
+                      ),
                       questionType: _questionType,
                       difficulty: _difficulty,
                     );
-                    
+
                     List<GeneratedQuestion> generatedQuestions = [];
                     try {
                       // Coba menggunakan improved AI service terlebih dahulu
                       final improvedService = ImprovedAiQuestionService(
-                        Platform.environment['OPENAI_API_KEY'] ?? ''
+                        Platform.environment['OPENAI_API_KEY'] ?? '',
                       );
-                      generatedQuestions = await improvedService.generateQuestions(request);
+                      generatedQuestions = await improvedService
+                          .generateQuestions(request);
                     } catch (e) {
                       // Jika improved service gagal, fallback ke real AI service
                       try {
                         final service = RealAiQuestionService();
-                        generatedQuestions = await service.generateQuestions(request);
+                        generatedQuestions = await service.generateQuestions(
+                          request,
+                        );
                       } catch (e2) {
                         // Jika real AI service juga gagal, gunakan implementasi lama
                         if (!mounted) return;
                         final fallbackService = AiQuestionService();
-                        generatedQuestions = fallbackService.generateQuestions(request);
+                        generatedQuestions = fallbackService.generateQuestions(
+                          request,
+                        );
                       }
                     }
 
@@ -290,7 +309,9 @@ class QuestionGeneratorScreenState extends State<QuestionGeneratorScreen> {
                       // Jika tidak ada soal yang dihasilkan, gunakan implementasi lama
                       final fallbackService = AiQuestionService();
                       if (!mounted) return;
-                      generatedQuestions = fallbackService.generateQuestions(request);
+                      generatedQuestions = fallbackService.generateQuestions(
+                        request,
+                      );
                     }
 
                     if (!mounted) return;
