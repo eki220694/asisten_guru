@@ -99,19 +99,20 @@ android {
         }
     }
 
-// Konfigurasi tambahan untuk menangani error checkReleaseAarMetadata
-android.applicationVariants.all {
-    it.outputs.all {
-        it.processManifestProvider.get().doLast {
-            // Konfigurasi untuk menangani error checkReleaseAarMetadata
-            val manifestFile = File(it.manifestOutputDirectory.get().asFile, "AndroidManifest.xml")
-            if (manifestFile.exists()) {
-                manifestFile.writeText(
-                    manifestFile.readText().replace(
-                        "android:usesCleartextTraffic=\"false\"", 
-                        "android:usesCleartextTraffic=\"true\""
+    // Konfigurasi tambahan untuk menangani error checkReleaseAarMetadata
+    applicationVariants.all {
+        outputs.all {
+            processManifestProvider.get().doLast {
+                // Konfigurasi untuk menangani error checkReleaseAarMetadata
+                val manifestFile = File(manifestOutputDirectory.get().asFile, "AndroidManifest.xml")
+                if (manifestFile.exists()) {
+                    manifestFile.writeText(
+                        manifestFile.readText().replace(
+                            "android:usesCleartextTraffic=\"false\"", 
+                            "android:usesCleartextTraffic=\"true\""
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -137,9 +138,6 @@ dependencies {
     implementation("androidx.annotation:annotation:1.7.1")
     implementation("androidx.fragment:fragment:1.6.2")
     implementation("androidx.activity:activity:1.8.2")
-    
-    // Dependency tambahan untuk menangani error checkReleaseAarMetadata dengan file_picker
-    implementation("com.github.getActivity:XXPermissions:18.0")
 }
 
 // Konfigurasi untuk menangani error checkReleaseAarMetadata
@@ -155,18 +153,5 @@ configurations.all {
         force("androidx.annotation:annotation:1.7.1")
         force("androidx.fragment:fragment:1.6.2")
         force("androidx.activity:activity:1.8.2")
-    }
-    
-    // Konfigurasi untuk menangani error checkReleaseAarMetadata
-    resolutionStrategy.eachDependency {
-        if (requested.group == "androidx.lifecycle" && requested.name == "lifecycle-common") {
-            useVersion("2.7.0")
-        }
-        if (requested.group == "androidx.core" && requested.name == "core-ktx") {
-            useVersion("1.12.0")
-        }
-        if (requested.group == "androidx.appcompat" && requested.name == "appcompat") {
-            useVersion("1.6.1")
-        }
     }
 }

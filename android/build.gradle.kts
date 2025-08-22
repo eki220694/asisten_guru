@@ -8,12 +8,7 @@ allprojects {
             url = uri("https://repo1.maven.org/maven2")
         }
         
-        // Repository untuk plugin file_picker
-        maven {
-            url = uri("https://jcenter.bintray.com")
-        }
-        
-        // Repository tambahan untuk menangani error checkReleaseAarMetadata
+        // Repository untuk plugin file_picker (menggunakan mavenCentral sebagai alternatif jcenter)
         maven {
             url = uri("https://maven.google.com")
         }
