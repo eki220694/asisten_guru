@@ -1,20 +1,3 @@
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        
-        // Repository tambahan untuk menangani error checkReleaseAarMetadata
-        maven {
-            url = uri("https://repo1.maven.org/maven2")
-        }
-        
-        // Repository untuk plugin file_picker (menggunakan mavenCentral sebagai alternatif jcenter)
-        maven {
-            url = uri("https://maven.google.com")
-        }
-    }
-}
-
 // Memperbaiki penggunaan buildDir yang deprecated
 rootProject.layout.buildDirectory.set(file("../build"))
 subprojects {
